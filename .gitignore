@@ -57,3 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
+# PhpStorm ignore
+.idea
+
+# Config
+config.js
