@@ -25,12 +25,18 @@ const header = function () {
     };
 };
 
+const maxTicking = 20;
+
 class DigiOnline {
     constructor() {
         const self = this;
 
         this.loginHash;
         this.deviceId;
+
+        this.lastChannelUrl;
+        this.tickerCounter = 0;
+        this.tickerSession;
 
         this.collectedChannels = [];
         this.login(function () {
@@ -43,7 +49,7 @@ class DigiOnline {
         const loginUrl = 'http://online.digi.hu/api/user/registerUser?_content_type=text%2Fjson&pass=:pass&platform=android&user=:email';
         const deviceReg = 'http://online.digi.hu/api/devices/registerPCBrowser?_content_type=text%2Fjson&dma=chrome&dmo=63&h=:hash&i=A5F0F867-B1A0-474A-BF32-938748A251B5&o=android&pass=:pass&platform=android&user=:email';
 
-        request.get(loginUrl.replace(':email', config.email).replace(':pass', md5(config.pass)), (e, r, body) => {
+        request.get(loginUrl.replace(':email', config.USERDATA.email).replace(':pass', md5(config.USERDATA.pass)), (e, r, body) => {
             const loginResponse = JSON.parse(body);
             log('login::loginResponse::' + loginResponse.data.response);
 
@@ -51,7 +57,7 @@ class DigiOnline {
                 // megszereztük a hash-t
                 this.loginHash = loginResponse.data.h;
 
-                request.get(deviceReg.replace(':email', config.email).replace(':pass', md5(config.pass)).replace(':hash', this.loginHash), (e, r, body) => {
+                request.get(deviceReg.replace(':email', config.USERDATA.email).replace(':pass', md5(config.USERDATA.pass)).replace(':hash', this.loginHash), (e, r, body) => {
                     // beregisztráltuk és megszereztük a device_id-t
                     const deviceResponse = JSON.parse(body);
                     log('login::deviceResponse::' + deviceResponse.data.response);
@@ -77,7 +83,35 @@ class DigiOnline {
                 self.generateEpg();
             });
         });
+    }
 
+    getDigiStreamUrl(id, cb) {
+        const streamUrl = 'http://online.digi.hu/api/streams/getStream?_content_type=text%2Fjson&action=getStream&h=:hash&i=:deviceId&id_stream=:streamId&platform=android';
+        request.get(streamUrl
+                .replace(':hash', this.loginHash)
+                .replace(':deviceId', this.deviceId)
+                .replace(':streamId', id), (e, r, body) => {
+            const response = JSON.parse(body),
+                stream_url = response.stream_url;
+
+            log(`getDigiStreamUrl::${id}::${stream_url}`);
+            cb(stream_url);
+
+            this.lastChannelUrl = stream_url;
+        });
+    }
+
+    ticker() {
+        clearInterval(this.tickerSession);
+        this.tickerSession = setInterval(() => {
+            log(`ticking::${this.tickerCounter}::${this.lastChannelUrl}`);
+            request.get(this.lastChannelUrl);
+            this.tickerCounter++;
+
+            if (this.tickerCounter > maxTicking) {
+                clearTimeout(this.tickerSession);
+            }
+        }, 5 * 60 * 1000); // 5p
     }
 
     generateM3u(programs, cb) {
@@ -97,32 +131,22 @@ class DigiOnline {
             }
         }
 
-        log('generateM3u::channels::' + channelList.length);
-
         const makeProgramData = function (channel, cb) {
-            log('makeProgramData::channel.program.id_stream::' + channel.program.id_stream);
-
-            const streamUrl = 'http://online.digi.hu/api/streams/getStream?_content_type=text%2Fjson&action=getStream&h=:hash&i=:deviceId&id_stream=:streamId&platform=android';
             let index       = channel.program.id_stream,
                 name        = channel.program.stream_name,
                 logo        = channel.program.logo,
                 category    = channel.category;
 
             const header = `#EXTINF:-${index} tvg-id="id${index} tvg-name="${name}" tvg-logo="${logo}" group-title="${category}", ${name} \n`;
-            request.get(streamUrl
-                    .replace(':hash', self.loginHash)
-                    .replace(':deviceId', self.deviceId)
-                    .replace(':streamId', index), (e, r, body) => {
-                const response = JSON.parse(body);
+            const body   = `${config.preUrl}/${index}\n`;
 
-                self.collectedChannels.push({
-                    channelIndex: index,
-                    name: name,
-                    id: 'id' + index
-                });
-
-                cb(header + response.stream_url + '\n');
+            self.collectedChannels.push({
+                channelIndex: index,
+                name: name,
+                id: 'id' + index
             });
+
+            cb(header + body);
         };
 
         const collectProgramData = function () {
@@ -137,6 +161,7 @@ class DigiOnline {
             });
         };
 
+        log(`Channels: ${channelList.length}`);
         collectProgramData();
     }
 

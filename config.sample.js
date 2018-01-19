@@ -1,6 +1,9 @@
-const USERDATA = {
-    email: '',
-    pass: ''
+const config = {
+    preUrl: 'http://localhost:1234',
+    USERDATA: {
+        email: '',
+        pass: ''
+    }
 };
 
-module.exports = USERDATA;
+module.exports = config;
