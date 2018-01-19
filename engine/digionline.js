@@ -103,6 +103,7 @@ class DigiOnline {
 
     ticker() {
         clearInterval(this.tickerSession);
+        this.tickerCounter = 0;
         this.tickerSession = setInterval(() => {
             log(`ticking::${this.tickerCounter}::${this.lastChannelUrl}`);
             request.get(this.lastChannelUrl);
