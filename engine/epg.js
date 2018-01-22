@@ -1,3 +1,8 @@
+/**
+ * Created by Ben
+ * https://github.com/szabbenjamin/digionline
+ */
+
 var jsdom = require("jsdom");
 var $ = require("jquery")(jsdom.jsdom().defaultView);
 var request = require('request');

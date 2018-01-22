@@ -1,3 +1,8 @@
+/**
+ * Created by Ben
+ * https://github.com/szabbenjamin/digionline
+ */
+
 const jsdom = require("jsdom");
 const $ = require("jquery")(jsdom.jsdom().defaultView);
 let request = require('request');
@@ -11,30 +16,27 @@ const md5 = require('md5')
 
 const config = require('../config.js');
 
-const header = function () {
-    return {
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept-Language': 'hu-HU,hu;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        'Host': 'onlineplayer.digi.hu',
-        'Pragma': 'no-cache',
-        'Referer': 'http://onlineplayer.digi.hu/',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 5.1.1; Nexus 6 Build/LYZ28E) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Mobile Safari/537.36'
-    };
-};
-
+/**
+ * Mivel a csatorna megnyitása után általában 12p után a streamelést a szerver biztosan abbahagyja
+ * muszáj időnként hellóznunk. A servlet a csatorna megnyitását követően 5 percenként ebben
+ * a konstansban megadott alkalommal küld egy üzenetet jelezvén, hogy még nézzük a csatornát.
+ * @type {number}
+ */
 const maxTicking = 20;
 
 class DigiOnline {
     constructor() {
         const self = this;
 
+        // bejelentkezéshez használt token
         this.loginHash;
+        // eszköz azonosító token
         this.deviceId;
 
+        // legutóbbi csatorna url-je
         this.lastChannelUrl;
+
+
         this.tickerCounter = 0;
         this.tickerSession;
 
@@ -44,6 +46,11 @@ class DigiOnline {
         });
     }
 
+    /**
+     * Elvégzi a bejelentkezést, lekéri a bejelentkezéshez használt tokent és androidos eszközként regisztrálja servletünket
+     * Ha mindez sikeresen megtörtént meghívja a cb-et
+     * @param {callback} cb
+     */
     login(cb) {
         log('login...');
         const loginUrl = 'http://online.digi.hu/api/user/registerUser?_content_type=text%2Fjson&pass=:pass&platform=android&user=:email';
@@ -67,11 +74,21 @@ class DigiOnline {
 
                         cb();
                     }
+                    else {
+                        log('login::deviceReg_fail::' + body);
+                    }
                 });
+            }
+            else {
+                log('login::login_fail::' + body);
             }
         });
     }
 
+    /**
+     * Csatorna lista generálása
+     * Lekéri a digi oldaláról az elérhető csatornalistát és kategóriákat, majd az alapján legenerálja az m3u fájlt
+     */
     generateChannelList() {
         const self = this;
         log('generateChannelList::Csatornalista generalas...');
@@ -85,6 +102,11 @@ class DigiOnline {
         });
     }
 
+    /**
+     * Meghívásakor lekéri az aktuális m3u fájlt a digi szerveréről a lejátszáshoz, callback-ben beállítja a stream url-t
+     * @param {Number} id
+     * @param {callback} cb
+     */
     getDigiStreamUrl(id, cb) {
         const streamUrl = 'http://online.digi.hu/api/streams/getStream?_content_type=text%2Fjson&action=getStream&h=:hash&i=:deviceId&id_stream=:streamId&platform=android';
         request.get(streamUrl
@@ -101,6 +123,9 @@ class DigiOnline {
         });
     }
 
+    /**
+     * Végrehajtja az 5 perces hellózást
+     */
     ticker() {
         clearInterval(this.tickerSession);
         this.tickerCounter = 0;
@@ -115,6 +140,11 @@ class DigiOnline {
         }, 5 * 60 * 1000); // 5p
     }
 
+    /**
+     * Feldolgozza a digi oldaláról begyűjtött csatorna információkat
+     * @param {object} programs
+     * @param {callback} cb
+     */
     generateM3u(programs, cb) {
         const self = this;
 
@@ -132,6 +162,11 @@ class DigiOnline {
             }
         }
 
+        /**
+         * Legyártja a csatorna megnyitásához szükséges m3u-ba írt rekordokat
+         * @param channel
+         * @param cb
+         */
         const makeProgramData = function (channel, cb) {
             let index       = channel.program.id_stream,
                 name        = channel.program.stream_name,
@@ -150,6 +185,9 @@ class DigiOnline {
             cb(header + body);
         };
 
+        /**
+         * Feldolgozza a csatornalista előállításához szükséges adatokat
+         */
         const collectProgramData = function () {
             makeProgramData(channelList.pop(), channelLine => {
                 m3u_data += channelLine;
@@ -166,6 +204,9 @@ class DigiOnline {
         collectProgramData();
     }
 
+    /**
+     * Elektronikus programujságot generálunk
+     */
     generateEpg() {
         const self = this;
         let epgChannels = '',

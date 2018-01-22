@@ -1,3 +1,8 @@
+/**
+ * Created by Ben
+ * https://github.com/szabbenjamin/digionline
+ */
+
 const http = require("http");
 const log = require('./log.js');
 const DigiOnline = require('./digionline.js');
@@ -27,7 +32,7 @@ try {
      * Ezen fog hallgatni a servlet
      * @type {Number}
      */
-    var listenPort = parseInt(config.preUrl.split(':')[2].replace('/', ''));
+    const listenPort = parseInt(config.preUrl.split(':')[2].replace('/', ''));
     if (!isNaN(listenPort) && listenPort > 0) {
         server.listen(listenPort);
         log("Server is listening: " + config.preUrl);

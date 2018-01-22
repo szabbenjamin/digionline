@@ -1,3 +1,8 @@
+/**
+ * Created by Ben
+ * https://github.com/szabbenjamin/digionline
+ */
+
 const console_log = true;
 const fs = require('fs');
 
@@ -6,7 +11,7 @@ const fs = require('fs');
  * Ha a kód kicsit stabilabb lesz a configba bekerül a console_log kapcsolgathatósága
  * @param input {string}
  */
-var log = function (input) {
+const log = function (input) {
     input = (new Date()).toString() + ' # ' + input;
 
     fs.appendFile('../log.log', input + '\r\n', () => {});
