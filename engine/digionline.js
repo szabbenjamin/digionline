@@ -232,7 +232,7 @@ class DigiOnline {
             log('epg.xml ujrairva');
         };
 
-        let channel_list_temp = self.collectedChannels;
+        let channel_list_temp = self.collectedChannels.slice(0);
         let progress = setInterval(() => {
             // Ha elfogyott vége a dalnak, mentjük az xml-t
             if (channel_list_temp.length === 0) {
@@ -263,7 +263,7 @@ class DigiOnline {
                     }
                 });
             }
-        }, 2000);
+        }, 500);
 
         /**
          * XML újragyártása 12 óránként
