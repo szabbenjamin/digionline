@@ -1,13 +1,14 @@
 {
   "name": "digionline",
-  "version": "0.2.0",
+  "version": "0.9.3",
   "description": "DigiOnline nodejs servlet külső lejátszóhoz",
   "main": "tv_servlet.js",
   "dependencies": {
     "jquery": "^3.1.1",
     "jsdom": "^9.9.1",
     "readline-sync": "^1.4.5",
-    "webpack": "^1.14.0"
+    "webpack": "^1.14.0",
+    "md5": "2.2.1"
   },
   "repository": {
     "type": "git",
