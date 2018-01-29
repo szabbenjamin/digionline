@@ -117,6 +117,14 @@ class DigiOnline {
                 stream_url = response.stream_url;
 
             log(`getDigiStreamUrl::${id}::${stream_url}`);
+
+            /**
+             * Hibás válasz esetén lelövi a programot, hogy ha service akkor tiszta lappal induljunk újra
+             */
+            request.get(stream_url).on('error', () => {
+                throw 'Hibas valasz' + stream_url;
+            });
+
             cb(stream_url);
 
             this.lastChannelUrl = stream_url;
