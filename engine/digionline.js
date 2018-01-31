@@ -12,7 +12,8 @@ const fs = require('fs');
 const epgClass = require('./epg');
 const Epg = new epgClass();
 const log = require('./log.js');
-const md5 = require('md5')
+const md5 = require('md5');
+const validUrl = require('valid-url');
 
 const config = require('../config.js');
 
@@ -49,7 +50,7 @@ class DigiOnline {
         // legutóbbi csatorna url-je
         this.lastChannelUrl;
 
-
+        this.reTryCounter = 0;
         this.tickerCounter = 0;
         this.tickerSession;
 
@@ -63,17 +64,20 @@ class DigiOnline {
      * Elvégzi a bejelentkezést, lekéri a bejelentkezéshez használt tokent és androidos eszközként regisztrálja servletünket
      * Ha mindez sikeresen megtörtént meghívja a cb-et
      * @param {callback} cb
+     * @param {boolean} forceLogin
      */
-    login(cb) {
-        /**
-         * Abban az esetben ha a bejelentkezés a loginTimeout-on belül megtörtént
-         * nem kísérlünk meg újabb bejelentkezést feleslegesen
-         * @type {number}
-         */
-        const idleTime = (new Date()).getTime() - lastUpdate;
-        if (idleTime < loginTimeout) {
-            cb();
-            return;
+    login(cb, forceLogin = false) {
+        if (!forceLogin) {
+            /**
+             * Abban az esetben ha a bejelentkezés a loginTimeout-on belül megtörtént
+             * nem kísérlünk meg újabb bejelentkezést feleslegesen
+             * @type {number}
+             */
+            const idleTime = (new Date()).getTime() - lastUpdate;
+            if (idleTime < loginTimeout) {
+                cb();
+                return;
+            }
         }
         lastUpdate = (new Date()).getTime();
 
@@ -131,8 +135,9 @@ class DigiOnline {
      * Meghívásakor lekéri az aktuális m3u fájlt a digi szerveréről a lejátszáshoz, callback-ben beállítja a stream url-t
      * @param {Number} id
      * @param {callback} cb
+     * @param {boolean} forceLogin
      */
-    getDigiStreamUrl(id, cb) {
+    getDigiStreamUrl(id, cb, forceLogin = false) {
         this.login(() => {
             const streamUrl = 'http://online.digi.hu/api/streams/getStream?_content_type=text%2Fjson&action=getStream&h=:hash&i=:deviceId&id_stream=:streamId&platform=android';
             request.get(streamUrl
@@ -145,17 +150,26 @@ class DigiOnline {
                 log(`getDigiStreamUrl::${id}::${stream_url}`);
 
                 /**
-                 * Hibás válasz esetén lelövi a programot, hogy ha service akkor tiszta lappal induljunk újra
+                 * Hibás válasz esetén megpróbáljuk újraindítani a lekérést
                  */
-                request.get(stream_url).on('error', () => {
-                    throw 'Hibas valasz' + stream_url;
-                });
-
-                cb(stream_url);
+                if (validUrl.isUri(stream_url)) {
+                    cb(stream_url);
+                    this.reTryCounter = 0;
+                }
+                else {
+                    log(`getDigiStreamUrl::invalidUri::reTry=${this.reTryCounter}`);
+                    if (this.reTryCounter < 5) {
+                        this.getDigiStreamUrl(id, cb, true);
+                        this.reTryCounter++;
+                    }
+                    else {
+                        throw 'Hibas valasz' + stream_url;
+                    }
+                }
 
                 this.lastChannelUrl = stream_url;
             });
-        });
+        }, forceLogin);
     }
 
     /**
@@ -254,7 +268,7 @@ class DigiOnline {
          * XML legyártása
          */
         const writeXml = () => {
-            var content = Epg.getXmlContainer(epgChannels + epgPrograms);
+            let content = Epg.getXmlContainer(epgChannels + epgPrograms);
             fs.writeFileSync('../epg.xml', content);
             log('epg.xml ujrairva');
         };
