@@ -24,6 +24,19 @@ const config = require('../config.js');
  */
 const maxTicking = 20;
 
+/**
+ * A konstans a bejelentkezési idővel számol. Ha csatornát próbálunk meg elindítani, de már ezt az
+ * időt túlléptük a rendszer újra be fog jelentkeztetni. (default=3h, milliseconds)
+ * @type {number}
+ */
+const loginTimeout = 3 * 60 * 60 * 1000; // 3h
+
+/**
+ * Ebben az időpontban történt legutoljára tranzakció
+ * @type {number}
+ */
+let lastUpdate = 0;
+
 class DigiOnline {
     constructor() {
         const self = this;
@@ -52,6 +65,18 @@ class DigiOnline {
      * @param {callback} cb
      */
     login(cb) {
+        /**
+         * Abban az esetben ha a bejelentkezés a loginTimeout-on belül megtörtént
+         * nem kísérlünk meg újabb bejelentkezést feleslegesen
+         * @type {number}
+         */
+        const idleTime = (new Date()).getTime() - lastUpdate;
+        if (idleTime < loginTimeout) {
+            cb();
+            return;
+        }
+        lastUpdate = (new Date()).getTime();
+
         log('login...');
         const loginUrl = 'http://online.digi.hu/api/user/registerUser?_content_type=text%2Fjson&pass=:pass&platform=android&user=:email';
         const deviceReg = 'http://online.digi.hu/api/devices/registerPCBrowser?_content_type=text%2Fjson&dma=chrome&dmo=63&h=:hash&i=A5F0F867-B1A0-474A-BF32-938748A251B5&o=android&pass=:pass&platform=android&user=:email';
@@ -108,26 +133,28 @@ class DigiOnline {
      * @param {callback} cb
      */
     getDigiStreamUrl(id, cb) {
-        const streamUrl = 'http://online.digi.hu/api/streams/getStream?_content_type=text%2Fjson&action=getStream&h=:hash&i=:deviceId&id_stream=:streamId&platform=android';
-        request.get(streamUrl
+        this.login(() => {
+            const streamUrl = 'http://online.digi.hu/api/streams/getStream?_content_type=text%2Fjson&action=getStream&h=:hash&i=:deviceId&id_stream=:streamId&platform=android';
+            request.get(streamUrl
                 .replace(':hash', this.loginHash)
                 .replace(':deviceId', this.deviceId)
                 .replace(':streamId', id), (e, r, body) => {
-            const response = JSON.parse(body),
-                stream_url = response.stream_url;
+                const response = JSON.parse(body),
+                    stream_url = response.stream_url;
 
-            log(`getDigiStreamUrl::${id}::${stream_url}`);
+                log(`getDigiStreamUrl::${id}::${stream_url}`);
 
-            /**
-             * Hibás válasz esetén lelövi a programot, hogy ha service akkor tiszta lappal induljunk újra
-             */
-            request.get(stream_url).on('error', () => {
-                throw 'Hibas valasz' + stream_url;
+                /**
+                 * Hibás válasz esetén lelövi a programot, hogy ha service akkor tiszta lappal induljunk újra
+                 */
+                request.get(stream_url).on('error', () => {
+                    throw 'Hibas valasz' + stream_url;
+                });
+
+                cb(stream_url);
+
+                this.lastChannelUrl = stream_url;
             });
-
-            cb(stream_url);
-
-            this.lastChannelUrl = stream_url;
         });
     }
 
