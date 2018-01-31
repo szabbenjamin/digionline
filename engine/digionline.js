@@ -13,7 +13,6 @@ const epgClass = require('./epg');
 const Epg = new epgClass();
 const log = require('./log.js');
 const md5 = require('md5');
-const validUrl = require('valid-url');
 
 const config = require('../config.js');
 
@@ -152,20 +151,22 @@ class DigiOnline {
                 /**
                  * Hibás válasz esetén megpróbáljuk újraindítani a lekérést
                  */
-                if (validUrl.isUri(stream_url)) {
-                    cb(stream_url);
-                    this.reTryCounter = 0;
-                }
-                else {
-                    log(`getDigiStreamUrl::invalidUri::reTry=${this.reTryCounter}`);
-                    if (this.reTryCounter < 5) {
-                        this.getDigiStreamUrl(id, cb, true);
-                        this.reTryCounter++;
+                request.get(stream_url, (err, resp, body) => {
+                    if (!err) {
+                        cb(stream_url);
+                        this.reTryCounter = 0;
                     }
                     else {
-                        throw 'Hibas valasz' + stream_url;
+                        log(`getDigiStreamUrl::invalidUri::reTry=${this.reTryCounter}`);
+                        if (this.reTryCounter < 5) {
+                            this.getDigiStreamUrl(id, cb, true);
+                            this.reTryCounter++;
+                        }
+                        else {
+                            throw 'Hibas valasz' + stream_url;
+                        }
                     }
-                }
+                });
 
                 this.lastChannelUrl = stream_url;
             });
