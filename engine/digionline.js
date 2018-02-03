@@ -22,7 +22,7 @@ const config = require('../config.js');
  * a konstansban megadott alkalommal küld egy üzenetet jelezvén, hogy még nézzük a csatornát.
  * @type {number}
  */
-const maxTicking = 20;
+const maxTicking = 45;
 
 /**
  * A konstans a bejelentkezési idővel számol. Ha csatornát próbálunk meg elindítani, de már ezt az
@@ -187,7 +187,7 @@ class DigiOnline {
             if (this.tickerCounter > maxTicking) {
                 clearTimeout(this.tickerSession);
             }
-        }, 5 * 60 * 1000); // 5p
+        }, 2 * 60 * 1000); // 5p
     }
 
     /**
