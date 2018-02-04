@@ -7,7 +7,6 @@ const jsdom = require("jsdom");
 const $ = require("jquery")(jsdom.jsdom().defaultView);
 let request = require('request');
 request = request.defaults({jar: true});
-const readlineSync = require('readline-sync');
 const fs = require('fs');
 const epgClass = require('./epg');
 const Epg = new epgClass();
@@ -127,6 +126,10 @@ class DigiOnline {
                 fs.writeFileSync('../channels.m3u', m3u);
                 self.generateEpg();
             });
+
+            this.generateM3u(programs.data, function (m3u) {
+                fs.writeFileSync('../channels_ffmpeg.m3u', m3u);
+            }, 'ffmpeg');
         });
     }
 
@@ -195,7 +198,7 @@ class DigiOnline {
      * @param {object} programs
      * @param {callback} cb
      */
-    generateM3u(programs, cb) {
+    generateM3u(programs, cb, flag = '') {
         const self = this;
 
         let channelList = [],
@@ -224,7 +227,13 @@ class DigiOnline {
                 category    = channel.category;
 
             const header = `#EXTINF:-${index} tvg-id="id${index} tvg-name="${name}" tvg-logo="${logo}" group-title="${category}", ${name} \n`;
-            const body   = `${config.preUrl}/${index}\n`;
+            let body;
+            if (flag === 'ffmpeg') {
+                body = `pipe:///usr/bin/ffmpeg -i ${config.preUrl}/${index} -c copy -f mpegts pipe:1\n`;
+            }
+            else {
+                body = `${config.preUrl}/${index}\n`;
+            }
 
             self.collectedChannels.push({
                 channelIndex: index,
