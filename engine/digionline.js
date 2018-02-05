@@ -17,11 +17,11 @@ const config = require('../config.js');
 
 /**
  * Mivel a csatorna megnyitása után általában 12p után a streamelést a szerver biztosan abbahagyja
- * muszáj időnként hellóznunk. A servlet a csatorna megnyitását követően 5 percenként ebben
+ * muszáj időnként hellóznunk. A servlet a csatorna megnyitását követően 2 percenként ebben
  * a konstansban megadott alkalommal küld egy üzenetet jelezvén, hogy még nézzük a csatornát.
  * @type {number}
  */
-const maxTicking = 45;
+const maxTicking = Infinity;
 
 /**
  * A konstans a bejelentkezési idővel számol. Ha csatornát próbálunk meg elindítani, de már ezt az
@@ -124,7 +124,7 @@ class DigiOnline {
             const programs = JSON.parse(body);
             this.generateM3u(programs.data, function (m3u) {
                 fs.writeFileSync('../channels.m3u', m3u);
-                self.generateEpg();
+                // self.generateEpg();
             });
 
             this.generateM3u(programs.data, function (m3u) {
@@ -190,7 +190,7 @@ class DigiOnline {
             if (this.tickerCounter > maxTicking) {
                 clearTimeout(this.tickerSession);
             }
-        }, 2 * 60 * 1000); // 5p
+        }, 6 * 60 * 1000); // 2p
     }
 
     /**
