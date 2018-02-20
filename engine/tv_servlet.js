@@ -7,6 +7,7 @@ const http = require("http");
 const log = require('./log.js');
 const DigiOnline = require('./digionline.js');
 const config = require('../config.js');
+const fs = require('fs');
 
 log('#################Program starting#################');
 
@@ -22,6 +23,16 @@ const server = http.createServer(function(request, response) {
             digi.ticker();
             response.end();
         });
+    }
+    else if (get === 'channels.m3u') {
+        log('load::channels.m3u');
+        response.write(fs.readFileSync('../channels.m3u').toString());
+        response.end();
+    }
+    else if (get === 'epg.xml') {
+        log('load::epg.xml');
+        response.write(fs.readFileSync('../epg.xml').toString());
+        response.end();
     }
     else {
         response.end();

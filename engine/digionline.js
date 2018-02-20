@@ -153,7 +153,20 @@ class DigiOnline {
                  */
                 request.get(stream_url, (err, resp, body) => {
                     if (!err) {
-                        cb(stream_url);
+                        let streams = [];
+                        body.split('\n').forEach(element =>  {
+                            if (element.substring(0, 4) === 'http') {
+                                streams.push(element);
+                            }
+                        });
+
+                        // Kiválasztjuk a legjobb forrást
+                        let bestStreamUrl = streams.slice(-1).pop();
+                        bestStreamUrl = bestStreamUrl.replace(bestStreamUrl.substr(-14), '');
+
+                        log(`getDigiStreamUrl::bestUrl::${bestStreamUrl}`);
+
+                        cb(bestStreamUrl);
                         this.reTryCounter = 0;
                     }
                     else {
@@ -187,7 +200,7 @@ class DigiOnline {
             if (this.tickerCounter > maxTicking) {
                 clearTimeout(this.tickerSession);
             }
-        }, 2 * 60 * 1000); // 5p
+        }, 6 * 60 * 1000); // 6p
     }
 
     /**
