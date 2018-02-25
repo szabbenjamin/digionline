@@ -88,7 +88,7 @@ Ha hibát találtál vedd fel a kapcsolatot velem facebookon, vagy vegyél fel h
 
 Ha pedig úgy érzed meghívnál egy sörre én nem ellenkezem. :) 
 
-Paypal: https://www.paypal.me/dicsportal
+Paypal, kapcsolatfelvétel: szabbenjamin #kukac gmail #pont com
 
 
 
