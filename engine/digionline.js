@@ -153,20 +153,27 @@ class DigiOnline {
                  */
                 request.get(stream_url, (err, resp, body) => {
                     if (!err) {
-                        let streams = [];
-                        body.split('\n').forEach(element =>  {
-                            if (element.substring(0, 4) === 'http') {
-                                streams.push(element);
-                            }
-                        });
+                        if (typeof config.findBestUrl !== 'undefined' && config.findBestUrl || false) {
+                            console.log('findBestUrl')
+                            let streams = [];
+                            body.split('\n').forEach(element =>  {
+                                if (element.substring(0, 4) === 'http') {
+                                    streams.push(element);
+                                }
+                            });
 
-                        // Kiválasztjuk a legjobb forrást
-                        let bestStreamUrl = streams.slice(-1).pop();
-                        bestStreamUrl = bestStreamUrl.replace(bestStreamUrl.substr(-14), '');
+                            // Kiválasztjuk a legjobb forrást
+                            let bestStreamUrl = streams.slice(-1).pop();
+                            bestStreamUrl = bestStreamUrl.replace(bestStreamUrl.substr(-14), '');
 
-                        log(`getDigiStreamUrl::bestUrl::${bestStreamUrl}`);
+                            log(`getDigiStreamUrl::bestUrl::${bestStreamUrl}`);
 
-                        cb(bestStreamUrl);
+                            cb(bestStreamUrl);
+                        }
+                        else {
+                            console.log('streamurl')
+                            cb(stream_url);
+                        }
                         this.reTryCounter = 0;
                     }
                     else {
@@ -200,7 +207,7 @@ class DigiOnline {
             if (this.tickerCounter > maxTicking) {
                 clearTimeout(this.tickerSession);
             }
-        }, 6 * 60 * 1000); // 6p
+        }, 12 * 60 * 1000); // 6p
     }
 
     /**
