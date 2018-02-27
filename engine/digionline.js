@@ -152,9 +152,14 @@ class DigiOnline {
                  * Hibás válasz esetén megpróbáljuk újraindítani a lekérést
                  */
                 request.get(stream_url, (err, resp, body) => {
+                    const findBestUrl       = typeof config.findBestUrl !== 'undefined' && config.findBestUrl || false,
+                          findLowestUrl     = typeof config.findLowestStream !== 'undefined' && config.findLowestStream || false,
+                          findMediumStream  = typeof config.findMediumStream !== 'undefined' && config.findMediumStream || false,
+                          specialUrl        = findBestUrl || findLowestUrl || findMediumStream;
+
                     if (!err) {
-                        if (typeof config.findBestUrl !== 'undefined' && config.findBestUrl || false) {
-                            console.log('findBestUrl')
+                        // nem hagyományos urlt adunk vissza hanem direkt m3u stream url-t adunk
+                        if (specialUrl) {
                             let streams = [];
                             body.split('\n').forEach(element =>  {
                                 if (element.substring(0, 4) === 'http') {
@@ -162,16 +167,30 @@ class DigiOnline {
                                 }
                             });
 
+                            let spec_stream_url;
+
                             // Kiválasztjuk a legjobb forrást
-                            let bestStreamUrl = streams.slice(-1).pop();
-                            bestStreamUrl = bestStreamUrl.replace(bestStreamUrl.substr(-14), '');
+                            if (findBestUrl) {
+                                spec_stream_url = streams.pop();
+                                log(`getDigiStreamUrl::mode_findBestUrl::${spec_stream_url}`);
+                            }
+                            // kiválasztjuk a közepes minőségű forrást
+                            else if (findMediumStream) {
+                                streams.reverse().pop();
+                                spec_stream_url = streams.pop();
+                                log(`getDigiStreamUrl::mode_findMediumStream::${spec_stream_url}`);
+                            }
+                            // kiválasztjuk a leggyengébb minőségű forrást
+                            else {
+                                spec_stream_url = streams.reverse().pop();
+                                log(`getDigiStreamUrl::mode_findLowestUrl::${spec_stream_url}`);
+                            }
 
-                            log(`getDigiStreamUrl::bestUrl::${bestStreamUrl}`);
+                            spec_stream_url = spec_stream_url.replace(spec_stream_url.substr(-14), '');
 
-                            cb(bestStreamUrl);
+                            cb(spec_stream_url);
                         }
                         else {
-                            console.log('streamurl')
                             cb(stream_url);
                         }
                         this.reTryCounter = 0;
@@ -207,7 +226,7 @@ class DigiOnline {
             if (this.tickerCounter > maxTicking) {
                 clearTimeout(this.tickerSession);
             }
-        }, 12 * 60 * 1000); // 6p
+        }, 11 * 60 * 1000); // 11p
     }
 
     /**
