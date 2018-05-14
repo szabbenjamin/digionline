@@ -20,23 +20,22 @@ Telepítsd a nodejs v7 vagy annál nagyobb futtatókörnyezetet a saját linux r
 
 Állj arra a mappára ahova a servletet telepíteni szeretnéd, majd:
 
-`git clone https://github.com/szabbenjamin/digionline`
-
-`cd digionline`
-
-`cp config.sample.js config.js`
-
-`nano config.js`
+```
+git clone https://github.com/szabbenjamin/digionline`
+cd digionline
+cp config.sample.js config.js
+nano config.js
+```
 
 Itt töltsd ki a bejelentkezési adataidat, illetve azt az url-t, amin a servlet a hálózatodon elérhető lesz.
 
 Ezután:
 
-`cd engine`
-
-`npm install`
-
-`npm start`
+```
+cd engine
+npm install
+npm start
+```
 
 
 Ekkor elindul a csatornalista és az EPG betöltése - ez eltarthat néhány percig is.
@@ -47,11 +46,15 @@ Ezután indítsd újra a Kodit, ha kell a beállításokban engedélyezd az IPTV
 
 Hibás működés esetén figyeld a log.log fájl tartalmát:
 
-`tail -f log.log`
+```
+tail -f log.log
+```
 
 Ha szeretnéd szolgáltatásként felvenni systemctl-be akkor az alábbit tedd:
 
-`nano /etc/systemd/system/digionline.service`
+```
+nano /etc/systemd/system/digionline.service
+```
 
 ```bash
 [Unit]
