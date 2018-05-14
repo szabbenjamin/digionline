@@ -51,37 +51,21 @@ Hibás működés esetén figyeld a log.log fájl tartalmát:
 
 Ha szeretnéd szolgáltatásként felvenni systemctl-be akkor az alábbit tedd:
 
-`echo "[Unit]`
+`nano /etc/systemd/system/digionline.service`
 
- `Description=Digionline tv servlet app`
- 
-` [Service]`
-
-` ExecStart=<az indításhoz bashscript .sh>`
-
-` Restart=always`
-
-` User=root`
-
-` Group=root`
-
-` Environment=PATH=/usr/bin:/usr/local/bin`
-
-` Environment=NODE_ENV=production`
-
-` WorkingDirectory=<engine folder helye>`
-
-` `
-
-` [Install]`
-
-` WantedBy=multi-user.target" > digionline.service`
-
-`cp digionline.service /etc/systemd/system`
-
-`systemctl start digionline`
-
-`systemctl enable digionline`
+```bash
+[Unit]
+Description=Digionline tv servlet app
+[Service]
+ExecStart=/home/osmc/digionline/engine/start.sh
+WorkingDirectory=/home/osmc/digionline/engine/
+[Install]
+WantedBy=multi-user.target
+```
+```
+systemctl enable digionline
+systemctl start digionline
+```
 
 
 Ha hibát találtál vedd fel a kapcsolatot velem facebookon, vagy vegyél fel hibajegyet itt, github-on.
