@@ -8,15 +8,19 @@ const log = require('./log.js');
 const DigiOnline = require('./digionline.js');
 const config = require('../config.js');
 const fs = require('fs');
+const epgClass = require('./epg');
 
 log('#################Program starting#################');
 
 const digi = new DigiOnline();
 
+const Epg = new epgClass();
+
 const server = http.createServer(function(request, response) {
     let get = decodeURIComponent(request.url.substring(1));
-    if (!isNaN(get)) {
-        digi.getDigiStreamUrl(get, response_url => {
+    let channel = Epg.getEpg(get, true);
+    if (channel != null) {
+        digi.getDigiStreamUrl(channel, response_url => {
             response.writeHead(302, {
                 'Location': response_url
             });
@@ -26,12 +30,14 @@ const server = http.createServer(function(request, response) {
     }
     else if (get === 'channels.m3u') {
         log('load::channels.m3u');
-        response.write(fs.readFileSync('../channels.m3u').toString());
+	if(fs.existsSync('../channels.m3u'))
+        	response.write(fs.readFileSync('../channels.m3u').toString());
         response.end();
     }
     else if (get === 'epg.xml') {
         log('load::epg.xml');
-        response.write(fs.readFileSync('../epg.xml').toString());
+	if(fs.existsSync('../epg.xml'))
+	        response.write(fs.readFileSync('../epg.xml').toString());
         response.end();
     }
     else {

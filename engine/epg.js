@@ -11,6 +11,8 @@ const readlineSync = require('readline-sync');
 const fs = require('fs');
 const exec = require('child_process').exec;
 var log = require('./log.js');
+var moment = require('moment');
+
 
 /**
  * Olvasnivalók:
@@ -19,104 +21,199 @@ var log = require('./log.js');
  */
 class Epg {
     constructor () {
-        this.channelEpgUrls = {
-            id40: 'https://musor.tv/heti/tvmusor/M2',
-            id39: 'https://musor.tv/heti/tvmusor/M1',
-            id43: 'https://musor.tv/heti/tvmusor/DUNA',
-            id41: 'https://musor.tv/heti/tvmusor/M4_SPORT',
-            id44: 'https://musor.tv/heti/tvmusor/DUNAWORLD',
-            id132: 'https://musor.tv/heti/tvmusor/M5',
-            id207: 'https://musor.tv/heti/tvmusor/NICKELODEON',
-            id206: 'https://musor.tv/heti/tvmusor/FEM3',
-            id208: 'https://musor.tv/heti/tvmusor/SUPERTV2',
-            id10: 'https://musor.tv/heti/tvmusor/COMEDY',
-            id34: 'https://musor.tv/heti/tvmusor/COOL',
-            id32: 'https://musor.tv/heti/tvmusor/FILMPLUS',
-            id220: 'https://musor.tv/heti/tvmusor/NATGEO',
-            id29: 'https://musor.tv/heti/tvmusor/RTL2',
-            id37: 'https://musor.tv/heti/tvmusor/RTL',
-            id204: 'https://musor.tv/heti/tvmusor/TV2',
-            id2: 'https://musor.tv/heti/tvmusor/HIT_MUSIC',
-            id212: 'https://musor.tv/heti/tvmusor/IZAURA_TV',
-            id222: 'https://musor.tv/heti/tvmusor/NATGEOWILD',
-            id45: 'https://musor.tv/heti/tvmusor/VIASATHIST',
-            id21: 'https://musor.tv/heti/tvmusor/VIASATNAT',
-            id7: 'https://musor.tv/heti/tvmusor/DIGIANIMALWORLD',
-            id35: 'https://musor.tv/heti/tvmusor/PARAMOUNT',
-            id225: 'https://musor.tv/heti/tvmusor/PRIME',
-            id12: 'https://musor.tv/heti/tvmusor/DIGILIFE',
-            id130: 'https://musor.tv/heti/tvmusor/SPEKTRUM',
-            id11: 'https://musor.tv/heti/tvmusor/DIGIFILM',
-            id1: 'https://musor.tv/heti/tvmusor/DIGIWORLD',
-            id219: 'https://musor.tv/heti/tvmusor/RTL_SPIKE',
-            id215: 'https://musor.tv/heti/tvmusor/TLC',
-            id26: 'https://musor.tv/heti/tvmusor/DIGISPORT1',
-            id27: 'https://musor.tv/heti/tvmusor/DIGISPORT2',
-            id131: 'https://musor.tv/heti/tvmusor/DIGISPORT3',
-            id205: 'https://musor.tv/heti/tvmusor/EUROSPORT',
-            id4: 'https://musor.tv/heti/tvmusor/VIASATHIST',
-            id211: 'https://musor.tv/heti/tvmusor/HUMOR_PLUSZ',
-            id210: 'https://musor.tv/heti/tvmusor/EUROSPORT2',
-            id227: 'https://musor.tv/heti/tvmusor/LICHI_TV',
-            id23: 'https://musor.tv/heti/tvmusor/PAPRIKA',
-            id42: 'https://musor.tv/heti/tvmusor/AMC',
-            id216: 'https://musor.tv/heti/tvmusor/ZENEBUTIK',
-            id217: 'https://musor.tv/heti/tvmusor/MTV_EURO',
-            id213: 'https://musor.tv/heti/tvmusor/KIWI_TV',
-            id214: 'https://musor.tv/heti/tvmusor/MOZI_PLUSZ',
-            id203: 'https://musor.tv/heti/tvmusor/DISCOVERY',
-            id118: 'https://musor.tv/heti/tvmusor/SPORT2',
-            id126: 'https://musor.tv/heti/tvmusor/SPORT1',
-            id5: 'https://musor.tv/heti/tvmusor/MUSICCHANNEL',
-            id226: 'https://musor.tv/heti/tvmusor/MINIMAX',
+        this.channelEpg = {
+            "40":  'M2',
+            "39":  'M1',
+            "43":  'DUNA',
+            "41":  'M4_SPORT',
+            "44":  'DUNAWORLD',
+            "132": 'M5',
+            "207": 'NICKELODEON',
+            "206": 'FEM3',
+            "208": 'SUPERTV2',
+            "10":  'COMEDY',
+            "34":  'COOL',
+            "32":  'FILMPLUS',
+            "220": 'NATGEO',
+            "29":  'RTL2',
+            "37":  'RTL',
+            "204": 'TV2',
+            "2":   'HIT_MUSIC',
+            "212": 'IZAURA_TV',
+            "222": 'NATGEOWILD',
+            "45":  'VIASATHIST',
+            "21":  'VIASATNAT',
+            "7":   'DIGIANIMALWORLD',
+            "35":  'PARAMOUNT',
+            "225": 'PRIME',
+            "12":  'DIGILIFE',
+            "130": 'SPEKTRUM',
+            "11":  'DIGIFILM',
+            "1":   'DIGIWORLD',
+            "219": 'RTL_SPIKE',
+            "215": 'TLC',
+            "26":  'DIGISPORT1',
+            "27":  'DIGISPORT2',
+            "131": 'DIGISPORT3',
+            "205": 'EUROSPORT',
+            "4":   'VIASATHIST',
+            "211": 'HUMOR_PLUSZ',
+            "210": 'EUROSPORT2',
+            "227": 'LiChi TV',
+            "23":  'PAPRIKA',
+            "42":  'AMC',
+            "216": 'ZENEBUTIK',
+            "217": 'MTVHU',
+            "213": 'KIWI_TV',
+            "214": 'MOZI_PLUSZ',
+            "203": 'DISCOVERY',
+            "118": 'SPORT2',
+            "126": 'SPORT1',
+            "5":   'MUSICCHANNEL',
+            "226": 'MINIMAX',
 
         };
-
-        /*
-         * Template fájlok az xml generálásához
-         */
-        this.channelTemplate = '<channel id="id:id"><display-name lang="hu">:channelName</display-name></channel>';
-        this.programmeTemplate = '<programme start=":start +0100" stop=":end +0100" channel="id:id"><title lang="hu">:programme</title></programme>';
-        this.xmlContainer = '<?xml version="1.0" encoding="utf-8" ?><tv>:content</tv>';
     }
 
-    getChannelEpgUrls () {
-        return this.channelEpgUrls;
+    getUrl() {
+        return "http://epg.gravi.hu/guide.xml";
     }
 
-    getXmlContainer (content) {
-        return this.xmlContainer
-            .replace(':content', content);
+    getEpg(key, direction = false)
+    {
+        if(direction === false)
+        {
+             if(this.channelEpg.hasOwnProperty(key))
+                 return this.channelEpg[key];
+             return null;
+        }
+        return this.findKey(this.channelEpg, key);
     }
 
-    getChannelEpg (id, channelName) {
-        var channel = this.channelTemplate
-            .replace(':id', id)
-            .replace(':channelName', channelName);
-
-        return channel;
+    getChannelEpg () {
+        return this.channelEpg;
     }
 
-    getProgrammeTemplate (id, start, end, programme) {
-        var startCorrect = new Date(start);
-        // időzóna korrekció
-        startCorrect.setHours(startCorrect.getHours() - 3);
+    findKey(obj, value)
+    {
+        for (var prop in obj)
+        {
+             if (obj.hasOwnProperty(prop))
+             {
+                  if (obj[prop] === value)
+                  {
+                       return prop;
+                  }
+             }
+        }
+        return null;
+    };
 
-        var endCorrect = new Date(end);
-        // időzóna korrekció
-        endCorrect.setHours(endCorrect.getHours() - 3);
+    /**
+     * Műsorok letöltése
+     * @param epgUrl
+     * @param cb
+     */
+    generateEpg(cb) {
+	var self = this;
+	var headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0',
+            'Content-Type' : 'application/x-www-form-urlencoded'
+        };
+        request.get(
+		this.getUrl(),
+		{
+			headers: headers
+		},
+		function (error, response, body) {
+			body = body.split('+0200').join('+0300');
+			cb(body);
+			return;
+			
+			let xml = $(body);
 
-        // Nem lehet egyszerre egy csatornán egy másodpercben egy csatornának kezdete és vége, így kivontunk belőle 1 mp-et
-        endCorrect.setMilliseconds(endCorrect.getMilliseconds() - 1000);
+			let result = $('<tv></tv>');
 
-        return this.programmeTemplate
-            .replace(':id', id)
-            .replace(':start', this.formatDate(startCorrect))
-            .replace(':end', this.formatDate(endCorrect))
-            .replace(':programme', programme);
+			$.each(self.getChannelEpg(), function (id, xmlId) {
+				log('channel[id="'+xmlId+'"]');
+				let c = $('channel[id="'+xmlId+'"]',xml).clone();
+				c.appendTo(result);
+				log('programme[channel="'+xmlId+'"]');
+				let p = $('programme[channel="'+xmlId+'"]',xml).clone();
+				p.appendTo(result);
+				/*$('channel[id="'+xmlId+'"]',xml).attr('id', id);
+				log("Csatorna "+xmlId+" csere "+id);
+				$('programme[channel="'+xmlId+'"]',xml).attr('channel', id);
+				log("Program "+xmlId+" csere "+id);
+				ids.push(id);*/
+			});
+
+			$('programme',result).each(function(index,prog){
+				let programme = $(prog);
+				var startCorrect = self.parseDate(programme.attr('start'));
+				// időzóna korrekció
+				startCorrect.setHours(startCorrect.getHours() - 1);
+
+				var endCorrect = self.parseDate(programme.attr('stop'));
+				// időzóna korrekció
+				endCorrect.setHours(endCorrect.getHours() - 1);
+
+				// Nem lehet egyszerre egy csatornán egy másodpercben egy csatornának kezdete és vége, így kivontunk belőle 1 mp-et
+				//endCorrect.setMilliseconds(endCorrect.getMilliseconds() - 1000);
+				programme.attr('start', self.formatDate(startCorrect));
+				programme.attr('stop', self.formatDate(endCorrect));
+				programme.appendTo(result);
+			});
+
+			cb('<?xml version="1.0" encoding="UTF-8"?>'+result[0].outerHTML);
+
+			return;
+
+			let ids = [];
+
+			let xmlIds = [];
+
+			$.each(self.getChannelEpg(), function (id, xmlId) {
+				xmlIds.push(xmlId);
+			});
+
+			/*log("Azonositatlan csatornak torlese");
+			log('channel:not([id="'+xmlIds.join('"], [id="')+'"])');
+			$('channel:not([id="'+xmlIds.join('"], [id="')+'"])',xml).remove();
+			log("Azonositatlan programok torlese");
+			log('programme:not([channel="'+xmlIds.join('"], [channel="')+'"])');
+			$('programme:not([channel="'+xmlIds.join('"], [channel="')+'"])',xml).remove();*/
+
+			$.each(self.getChannelEpg(), function (id, xmlId) {
+				log('channel[id="'+xmlId+'"]');
+				let c = $('channel[id="'+xmlId+'"]',xml).clone();
+				c.attr('id', id).appendTo(result);
+				log('programme[channel="'+xmlId+'"]');
+				let p = $('programme[channel="'+xmlId+'"]',xml).clone();
+				p.attr('channel', id).appendTo(result);
+				/*$('channel[id="'+xmlId+'"]',xml).attr('id', id);
+				log("Csatorna "+xmlId+" csere "+id);
+				$('programme[channel="'+xmlId+'"]',xml).attr('channel', id);
+				log("Program "+xmlId+" csere "+id);
+				ids.push(id);*/
+			});
+
+			cb('<?xml version="1.0" encoding="UTF-8"?>'+result[0].outerHTML);
+		}
+	);
+
+    }
+
+    parseDate (date) {
+	var parsed = moment(date, 'YYYYMMDDHHmmss ZZ', true);
+	if (parsed.isValid()) {
+        	return parsed.toDate();
+	}
+	return null;
     }
 
     formatDate (date) {
+	return moment(date).format('YYYYMMDDHHmmss ZZ');
         var d       = new Date(date);
         var year    = d.getFullYear();
         var month   = d.getMonth()+1;
@@ -141,49 +238,6 @@ class Epg {
         }
 
         return '' + year+month+day+hour+minute+second;
-    }
-
-    /**
-     * Műsorok letöltése
-     * @param epgUrl
-     * @param cb
-     */
-    loadEPG(epgUrl, cb) {
-        var headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0',
-            'Content-Type' : 'application/x-www-form-urlencoded'
-        };
-
-        var shows = [];
-
-        request.get(
-            epgUrl,
-            {
-                headers: headers
-            },
-            function (error, response, body) {
-            var loadedShows = [];
-
-            $.each($(body).find('[itemtype="https://schema.org/BroadcastEvent"]'), function (index, program) {
-                var show = {
-                    startDate: $(program).find('[itemprop="startDate"]').attr('content'),
-                    name: $(program).find('[itemprop="name"] a').html(),
-                    description: $(program).find('[itemprop="description"]').html()
-                };
-
-                shows.push(show);
-            });
-
-            // Rendezés
-            shows.sort(function (a, b) {
-                a = new Date(a.startDate);
-                b = new Date(b.startDate);
-                return a < b ? -1 : a > b ? 1 : 0;
-            });
-
-            cb(shows);
-        });
-
     }
 }
 

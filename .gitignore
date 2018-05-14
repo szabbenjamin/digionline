@@ -62,3 +62,7 @@ typings/
 
 # Config
 config.js
+
+# for later auto generation
+channels.m3u
+epg.xml
