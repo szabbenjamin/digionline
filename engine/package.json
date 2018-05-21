@@ -18,7 +18,7 @@
     "node": ">=7.3.0"
   },
   "scripts": {
-    "start": "nodejs tv_servlet.js"
+    "start": "node tv_servlet.js"
   },
   "author": "",
   "license": "ISC"
