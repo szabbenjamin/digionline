@@ -53,7 +53,6 @@ class DigiOnline {
         this.tickerCounter = 0;
         this.tickerSession;
 
-        this.collectedChannels = [];
         this.login(function () {
             self.generateChannelList();
         });
@@ -223,10 +222,10 @@ class DigiOnline {
             request.get(this.lastChannelUrl);
             this.tickerCounter++;
 
-            if (this.tickerCounter > maxTicking) {
-                clearTimeout(this.tickerSession);
-            }
-        }, 11 * 60 * 1000); // 11p
+            //if (this.tickerCounter > maxTicking) {
+            //    clearTimeout(this.tickerSession);
+            //}
+        }, 1 * 60 * 1000); // 1p
     }
 
     /**
@@ -238,7 +237,7 @@ class DigiOnline {
         const self = this;
 
         let channelList = [],
-            m3u_data = '#EXTM3U tvg-shift=3\n';
+            m3u_data = '#EXTM3U tvg-shift="1"\n';
 
         for (let pkey in programs) {
             let categoryElement = programs[pkey];
@@ -257,19 +256,15 @@ class DigiOnline {
          * @param cb
          */
         const makeProgramData = function (channel, cb) {
-            let index       = channel.program.id_stream,
-                name        = channel.program.stream_name,
-                logo        = channel.program.logo,
-                category    = channel.category;
+            let index       	= channel.program.id_stream,
+                name        	= channel.program.stream_name,
+                logo        	= channel.program.logo,
+                category    	= channel.category,
+                cindex      	= Epg.getEpg(index),
+		cindexencode	= encodeURIComponent(cindex);
 
-            const header = `#EXTINF:-${index} tvg-id="id${index} tvg-name="${name}" tvg-logo="${logo}" group-title="${category}", ${name} \n`;
-            const body   = `${config.preUrl}/${index}\n`;
-
-            self.collectedChannels.push({
-                channelIndex: index,
-                name: name,
-                id: 'id' + index
-            });
+            const header = `#EXTINF:-1 tvg-id="${cindex}" tvg-name="${name}" tvg-logo="${logo}" group-title="${category}", ${name} \n`;
+            const body   = `${config.preUrl}/${cindexencode}\n`;
 
             cb(header + body);
         };
@@ -297,54 +292,18 @@ class DigiOnline {
      * Elektronikus programujságot generálunk
      */
     generateEpg() {
-        const self = this;
-        let epgChannels = '',
-            epgPrograms = '',
-            epgUrls     = Epg.getChannelEpgUrls();
-
         log('EPG ujratoltese...');
 
         /**
          * XML legyártása
          */
-        const writeXml = () => {
-            let content = Epg.getXmlContainer(epgChannels + epgPrograms);
+        const writeXml = (content) => {
             fs.writeFileSync('../epg.xml', content);
             log('epg.xml ujrairva');
         };
 
-        let channel_list_temp = self.collectedChannels.slice(0);
-        let progress = setInterval(() => {
-            // Ha elfogyott vége a dalnak, mentjük az xml-t
-            if (channel_list_temp.length === 0) {
-                clearInterval(progress);
-                writeXml();
-                return;
-            }
-
-            let channelElement  = channel_list_temp.pop(),
-                channelIndex    = channelElement.channelIndex,
-                name            = channelElement.name,
-                id              = channelElement.id;
-
-            if (typeof epgUrls[id] !== 'undefined') {
-                epgChannels += Epg.getChannelEpg(channelIndex, name);
-
-                Epg.loadEPG(epgUrls[id], function (shows) {
-                    log(epgUrls[id] + ' ' + shows.length + ' scannelt musor');
-                    for (let i = 0; i < shows.length; i++) {
-                        let endStartDate = new Date(shows[i].startDate);
-                        epgPrograms += Epg.getProgrammeTemplate(
-                            channelIndex,
-                            shows[i].startDate,
-                            typeof shows[i+1] !== 'undefined'
-                                ? shows[i+1].startDate : endStartDate.setHours(endStartDate.getHours() + 1),
-                            shows[i].name + ' ' + shows[i].description
-                        );
-                    }
-                });
-            }
-        }, 500);
+	Epg.generateEpg(writeXml);
+        
 
         /**
          * XML újragyártása 12 óránként

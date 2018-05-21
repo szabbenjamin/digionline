@@ -20,23 +20,22 @@ Telepítsd a nodejs v7 vagy annál nagyobb futtatókörnyezetet a saját linux r
 
 Állj arra a mappára ahova a servletet telepíteni szeretnéd, majd:
 
-`git clone https://github.com/szabbenjamin/digionline`
-
-`cd digionline`
-
-`cp config.sample.js config.js`
-
-`nano config.js`
+```
+git clone https://github.com/szabbenjamin/digionline`
+cd digionline
+cp config.sample.js config.js
+nano config.js
+```
 
 Itt töltsd ki a bejelentkezési adataidat, illetve azt az url-t, amin a servlet a hálózatodon elérhető lesz.
 
 Ezután:
 
-`cd engine`
-
-`npm install`
-
-`npm start`
+```
+cd engine
+npm install
+npm start
+```
 
 
 Ekkor elindul a csatornalista és az EPG betöltése - ez eltarthat néhány percig is.
@@ -47,41 +46,29 @@ Ezután indítsd újra a Kodit, ha kell a beállításokban engedélyezd az IPTV
 
 Hibás működés esetén figyeld a log.log fájl tartalmát:
 
-`tail -f log.log`
+```
+tail -f log.log
+```
 
 Ha szeretnéd szolgáltatásként felvenni systemctl-be akkor az alábbit tedd:
 
-`echo "[Unit]`
+```
+nano /etc/systemd/system/digionline.service
+```
 
- `Description=Digionline tv servlet app`
- 
-` [Service]`
-
-` ExecStart=<az indításhoz bashscript .sh>`
-
-` Restart=always`
-
-` User=root`
-
-` Group=root`
-
-` Environment=PATH=/usr/bin:/usr/local/bin`
-
-` Environment=NODE_ENV=production`
-
-` WorkingDirectory=<engine folder helye>`
-
-` `
-
-` [Install]`
-
-` WantedBy=multi-user.target" > digionline.service`
-
-`cp digionline.service /etc/systemd/system`
-
-`systemctl start digionline`
-
-`systemctl enable digionline`
+```bash
+[Unit]
+Description=Digionline tv servlet app
+[Service]
+ExecStart=/home/osmc/digionline/engine/start.sh
+WorkingDirectory=/home/osmc/digionline/engine/
+[Install]
+WantedBy=multi-user.target
+```
+```
+systemctl enable digionline
+systemctl start digionline
+```
 
 
 Ha hibát találtál vedd fel a kapcsolatot velem facebookon, vagy vegyél fel hibajegyet itt, github-on.
