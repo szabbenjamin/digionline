@@ -52,6 +52,7 @@ class DigiOnline {
         this.reTryCounter = 0;
         this.tickerCounter = 0;
         this.tickerSession;
+        this.uuid = this._genUuid();
 
         this.channels = [];
 
@@ -83,8 +84,11 @@ class DigiOnline {
         lastUpdate = (new Date()).getTime();
 
         log('login...');
+
+
+
         const loginUrl = 'http://online.digi.hu/api/user/registerUser?_content_type=text%2Fjson&pass=:pass&platform=android&user=:email';
-        const deviceReg = 'http://online.digi.hu/api/devices/registerPCBrowser?_content_type=text%2Fjson&dma=chrome&dmo=63&h=:hash&i=A5F0F867-B1A0-474A-BF32-938748A251B5&o=android&pass=:pass&platform=android&user=:email';
+        const deviceReg = 'http://online.digi.hu/api/devices/registerPCBrowser?_content_type=text%2Fjson&dma=chrome&dmo=67&h=:hash&i=:uuid&o=android&pass=:pass&platform=android&user=:email';
 
         request.get(loginUrl.replace(':email', config.USERDATA.email).replace(':pass', md5(config.USERDATA.pass)), (e, r, body) => {
             const loginResponse = JSON.parse(body);
@@ -94,7 +98,11 @@ class DigiOnline {
                 // megszereztük a hash-t
                 this.loginHash = loginResponse.data.h;
 
-                request.get(deviceReg.replace(':email', config.USERDATA.email).replace(':pass', md5(config.USERDATA.pass)).replace(':hash', this.loginHash), (e, r, body) => {
+                request.get(deviceReg
+                    .replace(':email', config.USERDATA.email)
+                    .replace(':pass', md5(config.USERDATA.pass))
+                    .replace(':hash', this.loginHash)
+                    .replace(':uuid', this.uuid), (e, r, body) => {
                     // beregisztráltuk és megszereztük a device_id-t
                     const deviceResponse = JSON.parse(body);
                     log('login::deviceResponse::' + deviceResponse.data.response);
@@ -113,6 +121,24 @@ class DigiOnline {
                 log('login::login_fail::' + body);
             }
         });
+    }
+
+    /**
+     * Hexadecimális kód egyedi eszközazonosító beállítására
+     * @private
+     */
+    _genUuid() {
+        // minta: A5F0F867-B1A0-474A-BF32-938748A251B5
+        const randString = len => {
+            const _HEX = '0123456789ABCDEF';
+            let tmpStr = '';
+            for (let i = 0; i < len; i++) {
+                tmpStr += _HEX.charAt(Math.floor(Math.random() * _HEX.length));
+            }
+            return tmpStr;
+        };
+
+        return `${randString(8)}-${randString(4)}-${randString(4)}-${randString(4)}-${randString(12)}`;
     }
 
     /**
