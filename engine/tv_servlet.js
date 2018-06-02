@@ -38,6 +38,11 @@ const server = http.createServer(function(request, response) {
         response.write(fs.readFileSync('../channels.m3u').toString());
         response.end();
     }
+    else if (get === 'tvheadend_channels.m3u') {
+        log('load::tvheadend_channels.m3u');
+        response.write(fs.readFileSync('../tvheadend_channels.m3u').toString());
+        response.end();
+    }
     else if (get === 'epg.xml') {
         log('load::epg.xml');
         response.write(fs.readFileSync('../epg.xml').toString());

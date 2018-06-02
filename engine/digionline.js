@@ -151,9 +151,8 @@ class DigiOnline {
 
         request.get('http://online.digi.hu/api/playprograms/getAllCategoriesAndPrograms?_content_type=text%2Fjson&platform=android', (e, r, body) => {
             const programs = JSON.parse(body);
-            this.generateM3u(programs.data, function (m3u) {
-                fs.writeFileSync('../channels.m3u', m3u);
-                self.generateEpg();
+            this.generateM3u(programs.data, () => {
+                this.generateEpg();
             });
         });
     }
@@ -246,7 +245,8 @@ class DigiOnline {
         const self = this;
 
         let channelList = [],
-            m3u_data = '#EXTM3U tvg-shift=3\n';
+            m3u_data = '#EXTM3U tvg-shift=3\n',
+            m3u_data_tvheadend = '#EXTM3U tvg-shift=3\n';
 
         for (let pkey in programs) {
             let categoryElement = programs[pkey];
@@ -274,7 +274,7 @@ class DigiOnline {
                 category    = channel.category;
 
             const header = `#EXTINF:-${index} tvg-id="id${index} tvg-name="${name}" tvg-logo="${logo}" group-title="${category}", ${name} \n`;
-            const body   = `${config.preUrl}/${index}\n`;
+            let body = '';
 
             self.collectedChannels.push({
                 channelIndex: index,
@@ -282,7 +282,10 @@ class DigiOnline {
                 id: 'id' + index
             });
 
-            cb(header + body);
+            cb({
+                'iptv': header + `${config.preUrl}/${index}\n`,
+                'tvheadend': header + `pipe:///usr/bin/ffmpeg -i ${config.preUrl}/${index} -c copy -f mpegts pipe:1\n`
+            });
         };
 
         /**
@@ -290,12 +293,16 @@ class DigiOnline {
          */
         const collectProgramData = function () {
             makeProgramData(channelList.pop(), channelLine => {
-                m3u_data += channelLine;
+                m3u_data            += channelLine.iptv;
+                m3u_data_tvheadend  += channelLine.tvheadend;
+
                 if (channelList.length) {
                     collectProgramData();
                 }
                 else {
-                    cb(m3u_data);
+                    fs.writeFileSync('../channels.m3u', m3u_data);
+                    fs.writeFileSync('../tvheadend_channels.m3u', m3u_data_tvheadend);
+                    cb();
                 }
             });
         };
