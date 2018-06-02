@@ -16,7 +16,7 @@ const digi = new DigiOnline();
 const server = http.createServer(function(request, response) {
     let get = decodeURIComponent(request.url.substring(1));
     if (!isNaN(get)) {
-        digi.getDigiStreamUrl(get, response_url => {
+        digi.getDigiStreamUrl(get, (response_url, channelName) => {
             http.get(response_url, function (proxyRes) {
                 let data = '';
                 proxyRes.on('data', function (chunk) {
@@ -25,7 +25,10 @@ const server = http.createServer(function(request, response) {
                 });
                 proxyRes.on('end', function () {
                     response.end(data);
-                    log('Playing')
+                    log(`Play (${channelName})`)
+                });
+                proxyRes.on('error', function () {
+                    log(arguments);
                 });
             });
         });

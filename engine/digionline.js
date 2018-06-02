@@ -53,6 +53,8 @@ class DigiOnline {
         this.tickerCounter = 0;
         this.tickerSession;
 
+        this.channels = [];
+
         this.collectedChannels = [];
         this.login(function () {
             self.generateChannelList();
@@ -146,53 +148,32 @@ class DigiOnline {
                 const response = JSON.parse(body),
                     stream_url = response.stream_url;
 
-                log(`getDigiStreamUrl::${id}::${stream_url}`);
-
                 /**
                  * Hibás válasz esetén megpróbáljuk újraindítani a lekérést
                  */
                 request.get(stream_url, (err, resp, body) => {
-                    const findBestUrl       = typeof config.findBestUrl !== 'undefined' && config.findBestUrl || false,
-                          findLowestUrl     = typeof config.findLowestStream !== 'undefined' && config.findLowestStream || false,
-                          findMediumStream  = typeof config.findMediumStream !== 'undefined' && config.findMediumStream || false,
-                          specialUrl        = findBestUrl || findLowestUrl || findMediumStream;
-
                     if (!err) {
-                        // nem hagyományos urlt adunk vissza hanem direkt m3u stream url-t adunk
-                        if (specialUrl) {
-                            let streams = [];
-                            body.split('\n').forEach(element =>  {
-                                if (element.substring(0, 4) === 'http') {
-                                    streams.push(element);
+                        let videoStreamUrl = null;
+                        body.split('\n').forEach(row => {
+                            if (row.substring(0, 4) === 'http' && row.indexOf('&q=lq') !== -1) {
+                                videoStreamUrl = row.replace('&q=lq', `&q=${config.preferredQuality}`);
+                            }
+                        });
+
+                        if (!videoStreamUrl) {
+                            log(`Nem talalhato ilyen stream, vagy nem mukodik a csatorna: ${this.channels[id]} (${config.preferredQuality})`);
+                            body.split('\n').reverse().forEach(row => {
+                                if (row.substring(0, 4) === 'http') {
+                                    cb(row);
+                                    log(`Inditom helyette ezt: ${row}`);
                                 }
                             });
 
-                            let spec_stream_url;
-
-                            // Kiválasztjuk a legjobb forrást
-                            if (findBestUrl) {
-                                spec_stream_url = streams.pop();
-                                log(`getDigiStreamUrl::mode_findBestUrl::${spec_stream_url}`);
-                            }
-                            // kiválasztjuk a közepes minőségű forrást
-                            else if (findMediumStream) {
-                                streams.reverse().pop();
-                                spec_stream_url = streams.pop();
-                                log(`getDigiStreamUrl::mode_findMediumStream::${spec_stream_url}`);
-                            }
-                            // kiválasztjuk a leggyengébb minőségű forrást
-                            else {
-                                spec_stream_url = streams.reverse().pop();
-                                log(`getDigiStreamUrl::mode_findLowestUrl::${spec_stream_url}`);
-                            }
-
-                            spec_stream_url = spec_stream_url.replace(spec_stream_url.substr(-14), '');
-
-                            cb(spec_stream_url);
+                            console.log(body);
                         }
-                        else {
-                            cb(stream_url);
-                        }
+
+                        cb(videoStreamUrl, this.channels[id]);
+
                         this.reTryCounter = 0;
                     }
                     else {
@@ -249,8 +230,11 @@ class DigiOnline {
                     'program': programElement,
                     'category': categoryElement.category_name
                 });
+
+                this.channels[programElement.id_stream] = programElement.stream_name;
             }
         }
+
 
         /**
          * Legyártja a csatorna megnyitásához szükséges m3u-ba írt rekordokat
