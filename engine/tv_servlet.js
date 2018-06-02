@@ -17,11 +17,17 @@ const server = http.createServer(function(request, response) {
     let get = decodeURIComponent(request.url.substring(1));
     if (!isNaN(get)) {
         digi.getDigiStreamUrl(get, response_url => {
-            response.writeHead(302, {
-                'Location': response_url
+            http.get(response_url, function (proxyRes) {
+                let data = '';
+                proxyRes.on('data', function (chunk) {
+                    data += chunk;
+                    log('Buffering...');
+                });
+                proxyRes.on('end', function () {
+                    response.end(data);
+                    log('Playing')
+                });
             });
-            digi.ticker();
-            response.end();
         });
     }
     else if (get === 'channels.m3u') {

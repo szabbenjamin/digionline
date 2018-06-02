@@ -214,6 +214,7 @@ class DigiOnline {
 
     /**
      * Végrehajtja az 5 perces hellózást
+     * @deprecated
      */
     ticker() {
         clearInterval(this.tickerSession);
@@ -331,7 +332,7 @@ class DigiOnline {
                 epgChannels += Epg.getChannelEpg(channelIndex, name);
 
                 Epg.loadEPG(epgUrls[id], function (shows) {
-                    log(epgUrls[id] + ' ' + shows.length + ' scannelt musor');
+                    // log(epgUrls[id] + ' ' + shows.length + ' scannelt musor');
                     for (let i = 0; i < shows.length; i++) {
                         let endStartDate = new Date(shows[i].startDate);
                         epgPrograms += Epg.getProgrammeTemplate(
