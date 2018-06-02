@@ -301,7 +301,22 @@ class DigiOnline {
         const self = this;
         let epgChannels = '',
             epgPrograms = '',
+            epgTimestampPath = '../epg.timestamp',
             epgUrls     = Epg.getChannelEpgUrls();
+
+        let lastUpgrade;
+        try {
+            lastUpgrade = new Date(fs.readFileSync(epgTimestampPath).toString());
+        } catch (e) {
+            lastUpgrade = new Date('2000-01-01');
+        }
+
+        lastUpgrade.setDate(lastUpgrade.getDate() + 2);
+
+        if (lastUpgrade > (new Date())) {
+            log('EPG naprakesz');
+            return;
+        }
 
         log('EPG ujratoltese...');
 
@@ -347,13 +362,15 @@ class DigiOnline {
             }
         }, 500);
 
+        fs.writeFileSync(epgTimestampPath, (new Date()).toString());
+
         /**
-         * XML újragyártása 12 óránként
+         * XML újragyártása 48 óránként
          */
         setTimeout(function () {
             log('XML ujragyartasa...');
             self.generateEpg();
-        }, 12 * 60 * 60 * 1000);
+        }, 48 * 60 * 60 * 1000);
     }
 }
 
