@@ -14,77 +14,50 @@ Kodi-n az IPTV Simple Client-et kell beállítani, majd bekapcsolni - miután a 
 
 Fontos tudni, hogy e program nem hivatalos kiadás, működéséért garanciát nem vállalok.
 
+**Frissítések**
+
+v1.0.3
+
+- 12 percenként megállásra hibajavítás
+- TVHeadend támogatás 
+- Program indításának gyorsítása az által, hogy az EPG újratöltése 2 naponta történik és nem minden indításkor
+- Minőség beállítására új struktúrájú config.js fájl
+- Program stabilitás javítása
+
+v0.9.3
+
+- Lejátszáshoz működő url betöltése
+- Képminőség beállítása
+- Automata képminőség beállítás
+- EPG, csatornalista http kiszolgálás
+
 **Telepítés linux rendszerekre**
 
-Telepítsd a nodejs v7 vagy annál nagyobb futtatókörnyezetet a saját linux rendszeredre: https://nodejs.org/en/download/package-manager/
+Szükséged lesz node v7 vagy feletti futtatókönyezetre.
 
-Állj arra a mappára ahova a servletet telepíteni szeretnéd, majd:
+`git clone https://github.com/szabbenjamin/digionline/
+`
 
-`git clone https://github.com/szabbenjamin/digionline`
+`cd digionline/engine
+`
 
-`cd digionline`
+`npm install
+`
 
-`cp config.sample.js config.js`
+`cp config.sample.js config.js
+`
 
-`nano config.js`
+`nano config.js # bejelentkezési adatokat ide
+`
 
-Itt töltsd ki a bejelentkezési adataidat, illetve azt az url-t, amin a servlet a hálózatodon elérhető lesz.
+`npm start
+`
 
-Ezután:
+Olvasd a wiki-t: https://github.com/szabbenjamin/digionline/wiki
 
-`cd engine`
+**Visszajelzés, támogatás**
 
-`npm install`
-
-`npm start`
-
-
-Ekkor elindul a csatornalista és az EPG betöltése - ez eltarthat néhány percig is.
-
-Ha az epg.xml újraírva információt látod nyisd meg a Kodit, engedélyezd a már telepített bővítmények között az IPTV PVR ügyfelet, majd az általános beállítások fülön állítsd be a generálódott channels.m3u fájlt, az EPG beállítások fülön pedig a generált epg.xml fájlt.
-
-Ezután indítsd újra a Kodit, ha kell a beállításokban engedélyezd az IPTV PVR simple client-et, mint PVR ügyfelet és a betöltődött csatornalistában próbálj elindítani egy tv csatornát.
-
-Hibás működés esetén figyeld a log.log fájl tartalmát:
-
-`tail -f log.log`
-
-Ha szeretnéd szolgáltatásként felvenni systemctl-be akkor az alábbit tedd:
-
-`echo "[Unit]`
-
- `Description=Digionline tv servlet app`
- 
-` [Service]`
-
-` ExecStart=<az indításhoz bashscript .sh>`
-
-` Restart=always`
-
-` User=root`
-
-` Group=root`
-
-` Environment=PATH=/usr/bin:/usr/local/bin`
-
-` Environment=NODE_ENV=production`
-
-` WorkingDirectory=<engine folder helye>`
-
-` `
-
-` [Install]`
-
-` WantedBy=multi-user.target" > digionline.service`
-
-`cp digionline.service /etc/systemd/system`
-
-`systemctl start digionline`
-
-`systemctl enable digionline`
-
-
-Ha hibát találtál vedd fel a kapcsolatot velem facebookon, vagy vegyél fel hibajegyet itt, github-on.
+Ha hibát találtál vedd fel a kapcsolatot velem, vagy vegyél fel hibajegyet itt, github-on.
 
 Ha pedig úgy érzed meghívnál egy sörre én nem ellenkezem. :) 
 
