@@ -16,6 +16,10 @@ Fontos tudni, hogy e program nem hivatalos kiadás, működéséért garanciát 
 
 **Frissítések**
 
+v1.0.4
+
+ - Teljes telepítő melléklet OSMC rendszerre
+
 v1.0.3
 
 - 12 percenként megállásra hibajavítás
@@ -30,6 +34,19 @@ v0.9.3
 - Képminőség beállítása
 - Automata képminőség beállítás
 - EPG, csatornalista http kiszolgálás
+
+
+**Telepítés raspberry pi-re OSMC-vel**
+
+Töltsd le és telepítsd a raspberry pi-re az OSMC médialejátszót - ez egy rPI-re való Kodi verzió.
+
+Jelentkezz be ssh-n.
+
+`sudo su`
+
+`wget https://raw.githubusercontent.com/szabbenjamin/digionline/master/osmc_installer.sh && bash osmc_installer.sh`
+
+Enjoy!
 
 **Telepítés linux rendszerekre**
 
