@@ -46,6 +46,8 @@ Jelentkezz be ssh-n.
 
 `wget https://raw.githubusercontent.com/szabbenjamin/digionline/master/osmc_installer.sh && bash osmc_installer.sh`
 
+Mindezt videón: https://www.youtube.com/watch?v=Fp03feTzXWg
+
 Enjoy!
 
 **Telepítés linux rendszerekre**
