@@ -1,12 +1,18 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]
+  then echo "Futtasd root modban. Ird be: sudo su"
+  exit
+fi
+
 echo "DIGIOnline servlet telepito (v0.1) indul...";
 
 sleep 2;
 
 apt-get update;
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt-get install -y nodejs git
+apt-get install -y nodejs git
+apt-get install -y npm
 git clone https://github.com/szabbenjamin/digionline
 cd digionline/engine
 
