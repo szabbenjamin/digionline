@@ -46,7 +46,7 @@ class Epg {
             id225: 'https://musor.tv/heti/tvmusor/PRIME',
             id12: 'https://musor.tv/heti/tvmusor/DIGILIFE',
             id130: 'https://musor.tv/heti/tvmusor/SPEKTRUM',
-            id11: 'https://musor.tv/heti/tvmusor/DIGIFILM',
+            id232: 'https://musor.tv/heti/tvmusor/FILMNOW',
             id1: 'https://musor.tv/heti/tvmusor/DIGIWORLD',
             id219: 'https://musor.tv/heti/tvmusor/RTL_SPIKE',
             id215: 'https://musor.tv/heti/tvmusor/TLC',
