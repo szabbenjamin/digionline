@@ -28,6 +28,10 @@ v1.0.6
 
 - A közszolgálati csatornák indítási problémáinak javítása
 
+v1.0.5
+
+- DIGIFILM -> FILMNOW átállás EPG-ben való átvezetése
+
 v1.0.4
 
  - Teljes telepítő melléklet OSMC rendszerre
