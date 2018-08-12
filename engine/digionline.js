@@ -165,36 +165,49 @@ class DigiOnline {
      */
     getDigiStreamUrl(id, cb, forceLogin = false) {
         this.login(() => {
-            const streamUrl = 'http://online.digi.hu/api/streams/getStream?_content_type=text%2Fjson&action=getStream&h=:hash&i=:deviceId&id_stream=:streamId&platform=android';
-            request.get(streamUrl
+            const streamUrl = 'http://online.digi.hu/api/streams/getStream?_content_type=text%2Fjson&action=getStream&h=:hash&i=:deviceId&id_stream=:streamId&platform=android'
                 .replace(':hash', this.loginHash)
                 .replace(':deviceId', this.deviceId)
-                .replace(':streamId', id), (e, r, body) => {
+                .replace(':streamId', id);
+
+            request.get(streamUrl, (e, r, body) => {
                 const response = JSON.parse(body),
                     stream_url = response.stream_url;
 
-                /**
-                 * Hibás válasz esetén megpróbáljuk újraindítani a lekérést
-                 */
                 request.get(stream_url, (err, resp, body) => {
                     if (!err) {
                         let videoStreamUrl = null;
+
+                        /**
+                         * Néhány közszolgálati csatorna időszakos betöltési hiba fix
+                         * issue: https://github.com/szabbenjamin/digionline/issues/6
+                         */
                         body.split('\n').forEach(row => {
-                            if (row.substring(0, 4) === 'http' && row.indexOf('&q=lq') !== -1) {
-                                videoStreamUrl = row.replace('&q=lq', `&q=${config.preferredQuality}`);
+                            if (row.substring(0, 4) === 'http' && (
+                                row.indexOf('&q=lq') !== -1
+                                    ||
+                                row.indexOf('&q=mq') !== -1
+                                    ||
+                                row.indexOf('&q=hq') !== -1
+                            )) {
+                                videoStreamUrl = row
+                                    .replace('&q=lq', `&q=${config.preferredQuality}`)
+                                    .replace('&q=mq', `&q=${config.preferredQuality}`)
+                                    .replace('&q=hq', `&q=${config.preferredQuality}`);
                             }
                         });
 
+                        /**
+                         * Hibás válasz esetén megpróbálunk más streamet indítani
+                         */
                         if (!videoStreamUrl) {
                             log(`Nem talalhato ilyen stream, vagy nem mukodik a csatorna: ${this.channels[id]} (${config.preferredQuality})`);
                             body.split('\n').reverse().forEach(row => {
                                 if (row.substring(0, 4) === 'http') {
-                                    cb(row);
+                                    cb(row, this.channels[id]);
                                     log(`Inditom helyette ezt: ${row}`);
                                 }
                             });
-
-                            console.log(body);
                         }
 
                         cb(videoStreamUrl, this.channels[id]);
