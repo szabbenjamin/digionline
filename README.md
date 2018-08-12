@@ -14,7 +14,19 @@ Kodi-n az IPTV Simple Client-et kell beállítani, majd bekapcsolni - miután a 
 
 Fontos tudni, hogy e program nem hivatalos kiadás, működéséért garanciát nem vállalok.
 
+Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit vegyél fel github-on issue-t és segítünk!
+
 **Frissítések**
+
+v1.0.7
+- Tartalmazza az elektronikus programújság (EPG) azon javítását amikor egy-egy csatornán más csatorna műsorai jelentek meg tévesen
+- Raspberry pi és egyéb vékonyklienseken az EPG betöltése közben fellépő lassulás kiküszöbölésre került
+- EPG műsorok eltolódási javítása (további infók lent)
+- update.sh bevezetése, melynek futtatásával nullázódik az epg cache és a legújabb digionline programverzió kerül letöltésre (további infók lent)
+
+v1.0.6
+
+- A közszolgálati csatornák indítási problémáinak javítása
 
 v1.0.4
 
@@ -35,6 +47,37 @@ v0.9.3
 - Automata képminőség beállítás
 - EPG, csatornalista http kiszolgálás
 
+**Frissítés a legújabb verzióra**
+
+Állj a projekt mappájába, például: 
+
+`cd /home/osmc/digionline`
+
+`git pull origin master`
+
+**Saját update.sh használata**
+
+A v1.0.7-es verzióban megtalálható egy update.sh fájl, mely futtatásával az epg alaphelyzetbe áll, illetve a program is felfrissül a legújabb verzióra.
+
+Előfordulhat, hogy ezt az updatert egyszeri alkalommal futtathatóvá kell tenned:
+
+`chmod +x update.sh`
+
+Ezután használható a projekt mappájában:
+
+`./update.sh`
+
+**EPG eltolódás tudnivalók**
+
+Az IPTV client alkalmazásban szükséges az aktuális időzónádnak megfelelően beállítani a megfelelő óraeltolódást.
+
+Ezt itt találod:
+
+`Kiegészítők > Saját kiegészítők > PVR ügyfelek > PVR IPTV Simple Client > Beállítás > EPG beállítások > EPG időeltolás (óra)`
+
+...a nyári időszámításban értelemszerűen 2.00-re kell állítani.
+
+_Ha hibát találsz githubon vegyél fel rá issue-t!_
 
 **Telepítés raspberry pi-re OSMC-vel**
 
