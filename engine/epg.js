@@ -16,6 +16,8 @@ var log = require('./log.js');
  * Olvasnivalók:
  * https://en.wikipedia.org/wiki/Electronic_program_guide
  * http://kodi.wiki/view/Add-on:IPTV_Simple_Client
+ *
+ * @deprecated
  */
 class Epg {
     constructor () {
@@ -68,15 +70,14 @@ class Epg {
             id118: 'https://musor.tv/heti/tvmusor/SPORT2',
             id126: 'https://musor.tv/heti/tvmusor/SPORT1',
             id5: 'https://musor.tv/heti/tvmusor/MUSICCHANNEL',
-            id226: 'https://musor.tv/heti/tvmusor/MINIMAX',
-
+            id226: 'https://musor.tv/heti/tvmusor/MINIMAX'
         };
 
         /*
          * Template fájlok az xml generálásához
          */
-        this.channelTemplate = '<channel id="id:id"><display-name lang="hu">:channelName</display-name></channel>';
-        this.programmeTemplate = '<programme start=":start +0100" stop=":end +0100" channel="id:id"><title lang="hu">:programme</title></programme>';
+        this.channelTemplate = '<channel id="id:id"><display-name lang="hu">:channelName</display-name></channel>\n';
+        this.programmeTemplate = '<programme start=":start :startOffset" stop=":end :endOffset" channel="id:id"><title lang="hu">:programme</title></programme>\n';
         this.xmlContainer = '<?xml version="1.0" encoding="utf-8" ?><tv>:content</tv>';
     }
 
@@ -100,11 +101,13 @@ class Epg {
     getProgrammeTemplate (id, start, end, programme) {
         var startCorrect = new Date(start);
         // időzóna korrekció
-        startCorrect.setHours(startCorrect.getHours() - 3);
+        const startOffset = (startCorrect.getTimezoneOffset() / 60) * -1;
+        startCorrect.setHours(startCorrect.getHours() - startOffset) ;
 
         var endCorrect = new Date(end);
         // időzóna korrekció
-        endCorrect.setHours(endCorrect.getHours() - 3);
+        const endOffset = (endCorrect.getTimezoneOffset() / 60) * -1;
+        endCorrect.setHours(endCorrect.getHours() - endOffset);
 
         // Nem lehet egyszerre egy csatornán egy másodpercben egy csatornának kezdete és vége, így kivontunk belőle 1 mp-et
         endCorrect.setMilliseconds(endCorrect.getMilliseconds() - 1000);
@@ -113,7 +116,10 @@ class Epg {
             .replace(':id', id)
             .replace(':start', this.formatDate(startCorrect))
             .replace(':end', this.formatDate(endCorrect))
-            .replace(':programme', programme);
+            .replace(':programme', programme)
+            .replace(':startOffset', '+0100')
+            .replace(':endOffset', '+0100')
+            ;
     }
 
     formatDate (date) {
@@ -170,6 +176,16 @@ class Epg {
                     name: $(program).find('[itemprop="name"] a').html(),
                     description: $(program).find('[itemprop="description"]').html()
                 };
+
+                /**
+                 * duplikációk megszüntetése
+                 */
+                for (let i = 0; i < shows.length; i++) {
+                    let _startDate = shows[i].startDate;
+                    if (_startDate === show.startDate) {
+                        return;
+                    }
+                }
 
                 shows.push(show);
             });

@@ -257,9 +257,11 @@ class DigiOnline {
     generateM3u(programs, cb) {
         const self = this;
 
+        const offset = (new Date().getTimezoneOffset() / 60) * -1;
+
         let channelList = [],
-            m3u_data = '#EXTM3U tvg-shift=3\n',
-            m3u_data_tvheadend = '#EXTM3U tvg-shift=3\n';
+            m3u_data = '#EXTM3U tvg-shift="' + offset + '"\n',
+            m3u_data_tvheadend = '#EXTM3U tvg-shift=' + offset + '\n';
 
         for (let pkey in programs) {
             let categoryElement = programs[pkey];
@@ -287,7 +289,6 @@ class DigiOnline {
                 category    = channel.category;
 
             const header = `#EXTINF:-${index} tvg-id="id${index} tvg-name="${name}" tvg-logo="${logo}" group-title="${category}", ${name} \n`;
-            let body = '';
 
             self.collectedChannels.push({
                 channelIndex: index,
@@ -375,9 +376,7 @@ class DigiOnline {
 
             if (typeof epgUrls[id] !== 'undefined') {
                 epgChannels += Epg.getChannelEpg(channelIndex, name);
-
                 Epg.loadEPG(epgUrls[id], function (shows) {
-                    // log(epgUrls[id] + ' ' + shows.length + ' scannelt musor');
                     for (let i = 0; i < shows.length; i++) {
                         let endStartDate = new Date(shows[i].startDate);
                         epgPrograms += Epg.getProgrammeTemplate(
@@ -390,7 +389,8 @@ class DigiOnline {
                     }
                 });
             }
-        }, 500);
+            process.stdout.write(".");
+        }, 4 * 1000);
 
         fs.writeFileSync(epgTimestampPath, (new Date()).toString());
 
