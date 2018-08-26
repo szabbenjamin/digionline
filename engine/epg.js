@@ -70,7 +70,8 @@ class Epg {
             id118: 'https://musor.tv/heti/tvmusor/SPORT2',
             id126: 'https://musor.tv/heti/tvmusor/SPORT1',
             id5: 'https://musor.tv/heti/tvmusor/MUSICCHANNEL',
-            id226: 'https://musor.tv/heti/tvmusor/MINIMAX'
+            id226: 'https://musor.tv/heti/tvmusor/MINIMAX',
+            id228: 'https://musor.tv/heti/tvmusor/MTVHU'
         };
 
         /*
