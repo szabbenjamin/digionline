@@ -19,6 +19,9 @@ Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit v
 **Frissítések**
 
 v1.0.7
+- MTV Europe műsorújság javítása
+
+v1.0.7
 - Tartalmazza az elektronikus programújság (EPG) azon javítását amikor egy-egy csatornán más csatorna műsorai jelentek meg tévesen
 - Raspberry pi és egyéb vékonyklienseken az EPG betöltése közben fellépő lassulás kiküszöbölésre került
 - EPG műsorok eltolódási javítása (további infók lent)
