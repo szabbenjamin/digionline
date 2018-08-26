@@ -18,7 +18,7 @@ Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit v
 
 **Frissítések**
 
-v1.0.7
+v1.0.8
 - MTV Europe műsorújság javítása
 
 v1.0.7
