@@ -18,6 +18,9 @@ Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit v
 
 **Frissítések**
 
+v1.0.9
+- History channel versus Viasat History epg javítás
+
 v1.0.8
 - MTV Europe műsorújság javítása
 

@@ -41,7 +41,7 @@ class Epg {
             id2: 'https://musor.tv/heti/tvmusor/HIT_MUSIC',
             id212: 'https://musor.tv/heti/tvmusor/IZAURA_TV',
             id222: 'https://musor.tv/heti/tvmusor/NATGEOWILD',
-            id45: 'https://musor.tv/heti/tvmusor/VIASATHIST',
+            id45: 'https://musor.tv/heti/tvmusor/HISTORYHD',
             id21: 'https://musor.tv/heti/tvmusor/VIASATNAT',
             id7: 'https://musor.tv/heti/tvmusor/DIGIANIMALWORLD',
             id35: 'https://musor.tv/heti/tvmusor/PARAMOUNT',
