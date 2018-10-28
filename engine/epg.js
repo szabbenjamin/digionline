@@ -99,16 +99,23 @@ class Epg {
         return channel;
     }
 
-    getProgrammeTemplate (id, start, end, programme) {
-        var startCorrect = new Date(start);
-        // időzóna korrekció
-        const startOffset = (startCorrect.getTimezoneOffset() / 60) * -1;
-        startCorrect.setHours(startCorrect.getHours() - startOffset) ;
+    /**
+     * @private
+     */
+    _applyTimeZoneCorrection (originalDate) {
+        let correctDate = new Date(originalDate);
 
-        var endCorrect = new Date(end);
         // időzóna korrekció
-        const endOffset = (endCorrect.getTimezoneOffset() / 60) * -1;
-        endCorrect.setHours(endCorrect.getHours() - endOffset);
+        const offset = Epg.staticTimeZoneOffset;
+        correctDate.setHours(correctDate.getHours() - offset);
+
+        return correctDate;
+    }
+
+    getProgrammeTemplate (id, start, end, programme) {
+        var startCorrect = this._applyTimeZoneCorrection(start);
+
+        var endCorrect = this._applyTimeZoneCorrection(end);
 
         // Nem lehet egyszerre egy csatornán egy másodpercben egy csatornának kezdete és vége, így kivontunk belőle 1 mp-et
         endCorrect.setMilliseconds(endCorrect.getMilliseconds() - 1000);
@@ -131,19 +138,19 @@ class Epg {
         var hour    = d.getHours();
         var minute  = d.getMinutes();
         var second  = d.getSeconds();
-        if(month.toString().length == 1) {
+        if (month.toString().length == 1) {
             var month = '0'+month;
         }
-        if(day.toString().length == 1) {
+        if (day.toString().length == 1) {
             var day = '0'+day;
         }
-        if(hour.toString().length == 1) {
+        if (hour.toString().length == 1) {
             var hour = '0'+hour;
         }
-        if(minute.toString().length == 1) {
+        if (minute.toString().length == 1) {
             var minute = '0'+minute;
         }
-        if(second.toString().length == 1) {
+        if (second.toString().length == 1) {
             var second = '0'+second;
         }
 
@@ -156,12 +163,12 @@ class Epg {
      * @param cb
      */
     loadEPG(epgUrl, cb) {
-        var headers = {
+        let headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0',
             'Content-Type' : 'application/x-www-form-urlencoded'
         };
 
-        var shows = [];
+        let shows = [];
 
         request.get(
             epgUrl,
@@ -169,26 +176,36 @@ class Epg {
                 headers: headers
             },
             function (error, response, body) {
-            var loadedShows = [];
 
-            $.each($(body).find('[itemtype="https://schema.org/BroadcastEvent"]'), function (index, program) {
-                var show = {
-                    startDate: $(program).find('[itemprop="startDate"]').attr('content'),
-                    name: $(program).find('[itemprop="name"] a').html(),
-                    description: $(program).find('[itemprop="description"]').html()
-                };
+            $.each($(body).find("section"), function(index, section) {
+                /* A honlap eme "ajánló" elemeit el kell, hogy kerüljük, külünben
+                 * tetszőleges csatornákról kerülnének műsorok a listánkra! */
+                let suggestionsToBeIgnored = $(section).find('[class="rotated-text rotated-to-be-seen_internal"]').html();
 
-                /**
-                 * duplikációk megszüntetése
-                 */
-                for (let i = 0; i < shows.length; i++) {
-                    let _startDate = shows[i].startDate;
-                    if (_startDate === show.startDate) {
-                        return;
-                    }
+                if (typeof suggestionsToBeIgnored === 'undefined') {
+                    $.each($(section).find('[itemtype="https://schema.org/BroadcastEvent"]'), function (index, program) {
+                        let show = {
+                            startDate: $(program).find('[itemprop="startDate"]').attr('content'),
+                            name: $(program).find('[itemprop="name"] a').html(),
+                            description: $(program).find('[itemprop="description"]').html()
+                        };
+                        show.toString = function() {
+                            return "['" + show.startDate + "' '" + show.name + "' '" + show.description + "']";
+                        };
+
+                        /**
+                         * duplikációk megszüntetése
+                         */
+                        for (let i = 0; i < shows.length; i++) {
+                            let _startDate = shows[i].startDate;
+                            if (_startDate === show.startDate) {
+                                return;
+                            }
+                        }
+
+                        shows.push(show);
+                    });
                 }
-
-                shows.push(show);
             });
 
             // Rendezés
@@ -200,8 +217,14 @@ class Epg {
 
             cb(shows);
         });
-
     }
 }
+
+Object.defineProperty(Epg, 'staticTimeZoneOffset', {
+    value: (new Date().getTimezoneOffset() / 60) * -1,
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
 
 module.exports = Epg;
