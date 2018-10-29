@@ -37,6 +37,12 @@ const loginTimeout = 3 * 60 * 60 * 1000; // 3h
  */
 let lastUpdate = 0;
 
+/**
+ * A műsorújság újragenerálásának kikényszerítése.
+ * @type {boolean}
+ */
+const forceEpgRegeneration = false;
+
 class DigiOnline {
     constructor() {
         const self = this;
@@ -257,7 +263,7 @@ class DigiOnline {
     generateM3u(programs, cb) {
         const self = this;
 
-        const offset = (new Date().getTimezoneOffset() / 60) * -1;
+        const offset = Epg.staticTimeZoneOffset;
 
         let channelList = [],
             m3u_data = '#EXTM3U tvg-shift="' + offset + '"\n',
@@ -344,12 +350,14 @@ class DigiOnline {
 
         lastUpgrade.setDate(lastUpgrade.getDate() + 2);
 
-        if (lastUpgrade > (new Date())) {
+        if (forceEpgRegeneration) {
+            log('EPG kenyszeritett ujratoltese...');
+        } else if (lastUpgrade > (new Date())) {
             log('EPG naprakesz');
             return;
+        } else {
+            log('EPG ujratoltese...');
         }
-
-        log('EPG ujratoltese...');
 
         /**
          * XML legyártása
@@ -374,6 +382,7 @@ class DigiOnline {
                 name            = channelElement.name,
                 id              = channelElement.id;
 
+            process.stdout.write(name + "... ");
             if (typeof epgUrls[id] !== 'undefined') {
                 epgChannels += Epg.getChannelEpg(channelIndex, name);
                 Epg.loadEPG(epgUrls[id], function (shows) {
@@ -389,7 +398,7 @@ class DigiOnline {
                     }
                 });
             }
-            process.stdout.write(".");
+            process.stdout.write("kesz\n");
         }, 4 * 1000);
 
         fs.writeFileSync(epgTimestampPath, (new Date()).toString());
