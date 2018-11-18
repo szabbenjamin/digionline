@@ -18,6 +18,11 @@ Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit v
 
 **Frissítések**
 
+v1.0.11
+
+- Bizonyos esetekben való bejelentkezési problémák javítása
+- Naplózási rendszer finomhangolása
+
 v1.0.10
 - EPG javítások
 - epg-fix: "ez is érdekelheti" HTML section kiszűrése a műsorújság generálásakor

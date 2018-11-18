@@ -93,8 +93,8 @@ class DigiOnline {
 
 
 
-        const loginUrl = 'http://online.digi.hu/api/user/registerUser?_content_type=text%2Fjson&pass=:pass&platform=android&user=:email';
-        const deviceReg = 'http://online.digi.hu/api/devices/registerPCBrowser?_content_type=text%2Fjson&dma=chrome&dmo=67&h=:hash&i=:uuid&o=android&pass=:pass&platform=android&user=:email';
+        const loginUrl = 'http://online.digi.hu/api/user/registerUser?_content_type=text%2Fjson&pass=:pass&platform=android&user=:email&accept=1';
+        const deviceReg = 'http://online.digi.hu/api/devices/registerPCBrowser?_content_type=text%2Fjson&dma=chrome&dmo=67&h=:hash&i=:uuid&o=android&pass=:pass&platform=android&user=:email&accept=1';
 
         request.get(loginUrl.replace(':email', config.USERDATA.email).replace(':pass', md5(config.USERDATA.pass)), (e, r, body) => {
             const loginResponse = JSON.parse(body);
@@ -119,12 +119,14 @@ class DigiOnline {
                         cb();
                     }
                     else {
-                        log('login::deviceReg_fail::' + body);
+                        log('login::deviceReg_fail::' + body, true);
+                        throw new Error('login::deviceReg_fail::' + body);
                     }
                 });
             }
             else {
-                log('login::login_fail::' + body);
+                log('login::login_fail::' + body, true);
+                throw new Error('login::login_fail::' + body);
             }
         });
     }
@@ -207,7 +209,7 @@ class DigiOnline {
                          * Hibás válasz esetén megpróbálunk más streamet indítani
                          */
                         if (!videoStreamUrl) {
-                            log(`Nem talalhato ilyen stream, vagy nem mukodik a csatorna: ${this.channels[id]} (${config.preferredQuality})`);
+                            log(`Nem talalhato ilyen stream, vagy nem mukodik a csatorna: ${this.channels[id]} (${config.preferredQuality})`, true);
                             body.split('\n').reverse().forEach(row => {
                                 if (row.substring(0, 4) === 'http') {
                                     cb(row, this.channels[id]);
@@ -221,7 +223,7 @@ class DigiOnline {
                         this.reTryCounter = 0;
                     }
                     else {
-                        log(`getDigiStreamUrl::invalidUri::reTry=${this.reTryCounter}`);
+                        log(`getDigiStreamUrl::invalidUri::reTry=${this.reTryCounter}`, true);
                         if (this.reTryCounter < 5) {
                             this.getDigiStreamUrl(id, cb, true);
                             this.reTryCounter++;
