@@ -18,6 +18,12 @@ Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit v
 
 **Frissítések**
 
+v1.0.12
+
+- Passhash bevezetése. Részletek: https://github.com/szabbenjamin/digionline/wiki/Passhash-%C3%A9s-jelsz%C3%B3-haszn%C3%A1lata
+
+Köszi a közreműködést bela333-nak! https://github.com/bela333
+
 v1.0.11
 
 - Bizonyos esetekben való bejelentkezési problémák javítása
