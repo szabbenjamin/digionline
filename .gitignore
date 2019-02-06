@@ -62,3 +62,9 @@ typings/
 
 # Config
 config.js
+
+# Project specific
+channels.m3u
+engine/package-lock.json
+epg.timestamp
+tvheadend_channels.m3u

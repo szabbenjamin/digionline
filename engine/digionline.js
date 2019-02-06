@@ -15,6 +15,9 @@ const log = require('./log.js');
 const md5 = require('md5');
 
 const config = require('../config.js');
+if (config.USERDATA.passhash == null) {
+    config.USERDATA.passhash = md5(config.USERDATA.pass);
+}
 
 /**
  * Mivel a csatorna megnyitása után általában 12p után a streamelést a szerver biztosan abbahagyja
@@ -96,7 +99,7 @@ class DigiOnline {
         const loginUrl = 'http://online.digi.hu/api/user/registerUser?_content_type=text%2Fjson&pass=:pass&platform=android&user=:email&accept=1';
         const deviceReg = 'http://online.digi.hu/api/devices/registerPCBrowser?_content_type=text%2Fjson&dma=chrome&dmo=67&h=:hash&i=:uuid&o=android&pass=:pass&platform=android&user=:email&accept=1';
 
-        request.get(loginUrl.replace(':email', config.USERDATA.email).replace(':pass', md5(config.USERDATA.pass)), (e, r, body) => {
+        request.get(loginUrl.replace(':email', config.USERDATA.email).replace(':pass', config.USERDATA.passhash), (e, r, body) => {
             const loginResponse = JSON.parse(body);
             log('login::loginResponse::' + loginResponse.data.response);
 
@@ -106,7 +109,7 @@ class DigiOnline {
 
                 request.get(deviceReg
                     .replace(':email', config.USERDATA.email)
-                    .replace(':pass', md5(config.USERDATA.pass))
+                    .replace(':pass', config.USERDATA.passhash)
                     .replace(':hash', this.loginHash)
                     .replace(':uuid', this.uuid), (e, r, body) => {
                     // beregisztráltuk és megszereztük a device_id-t
