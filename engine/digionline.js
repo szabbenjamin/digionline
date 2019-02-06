@@ -13,9 +13,15 @@ const epgClass = require('./epg');
 const Epg = new epgClass();
 const log = require('./log.js');
 const md5 = require('md5');
-
 const config = require('../config.js');
-if (config.USERDATA.passhash == null) {
+
+if (config.USERDATA.pass && config.USERDATA.passhash) {
+    log(`FIGYELEM! A config.js USERDATA *pass* VAGY *passhash* adatát állítsd csak be, tehát vagy egyiket vagy a másikat. \nA pass a titkosítatlan, a passhash md5-tel titkosított jelszó, döntsd el melyiket szeretnéd tárolni! \n\nMódosítsd a config.js fájlt! \nA program most kilép.\n\n`, true);
+    throw new Error('config.js error');
+}
+
+
+if (!config.USERDATA.passhash) {
     config.USERDATA.passhash = md5(config.USERDATA.pass);
 }
 
