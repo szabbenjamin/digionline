@@ -1,6 +1,6 @@
 {
   "name": "digionline",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "description": "DigiOnline nodejs servlet külső lejátszóhoz",
   "main": "tv_servlet.js",
   "dependencies": {

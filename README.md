@@ -18,6 +18,18 @@ Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit v
 
 **Frissítések**
 
+v1.0.11
+
+- Bizonyos esetekben való bejelentkezési problémák javítása
+- Naplózási rendszer finomhangolása
+
+v1.0.10
+- EPG javítások
+- epg-fix: "ez is érdekelheti" HTML section kiszűrése a műsorújság generálásakor
+- az időzóna korrekció refaktorálása
+
+Köszönöm a közreműködést Siroki Istvánnak! :) https://github.com/istvans
+
 v1.0.9
 - History channel versus Viasat History epg javítás
 

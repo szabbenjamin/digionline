@@ -9,7 +9,7 @@ const DigiOnline = require('./digionline.js');
 const config = require('../config.js');
 const fs = require('fs');
 
-log('#################Program starting#################');
+log(`DIGIONLINE connect elindul (${process.env.npm_package_version})`);
 
 const digi = new DigiOnline();
 
@@ -28,7 +28,7 @@ const server = http.createServer(function(request, response) {
                     log(`Play (${channelName})`)
                 });
                 proxyRes.on('error', function () {
-                    log(arguments);
+                    log(arguments, true);
                 });
             });
         });
@@ -65,12 +65,12 @@ try {
         log("Server is listening: " + config.preUrl);
     }
     else {
-        log(' HIBA! Érvénytelen megadott port: ' + listenPort);
+        log(' HIBA! Érvénytelen megadott port: ' + listenPort, true);
         return;
     }
 
 } catch (e) {
-    log('Hiba tortent: ' + e.toString());
+    log('Hiba tortent: ' + e.toString(), true);
     return;
 }
 

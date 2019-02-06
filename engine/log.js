@@ -11,12 +11,12 @@ const fs = require('fs');
  * Ha a kód kicsit stabilabb lesz a configba bekerül a console_log kapcsolgathatósága
  * @param input {string}
  */
-const log = function (input) {
-    input = (new Date()).toString() + ' # ' + input;
+const log = function (input, isError = false) {
+    input = `${(new Date()).toString()} (${process.env.npm_package_version}) # ${input}`
 
     fs.appendFile('../log.log', input + '\r\n', () => {});
     if (console_log) {
-        console.log(input);
+        console.log(isError ? '\x1b[31m' : '', input, '\x1b[0m');
     }
 };
 
