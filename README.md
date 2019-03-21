@@ -4,7 +4,7 @@
 
 Ez egy servlet, illetve lejátszótól független kiegészítő ami a hivatalos http://onlineplayer.digi.hu weboldalon elérhető tv csatornák megnyitását teszi lehetővé külső alkalmazások számára. 
 
-Szükséges hozzá már meglévő digionline hozzáférés, melyet abban az esetben regisztrálhatsz a digi ügyfélkapuján keresztül, ha rendelkezel kábeltévé és internet előfizetéssel is. E program működéséhez nem szükséges digi hálózat, de legjobb tudomásom szerint csak magyar ip címről működik.
+Szükséges hozzá már meglévő digionline hozzáférés, melyet abban az esetben regisztrálhatsz a digi ügyfélkapuján keresztül, ha rendelkezel kábeltévé és internet előfizetéssel is. E program működéséhez nem szükséges digi hálózat és EU-n belül bárhonnan nézhető.
 
 Egy előfizetéshez jelenleg max három digionline account regisztrálható, a servlet egyszerre csak egy accountot kezel, így egyidőben egy servlet egyetlen lejátszót képes kiszolgálni.
 
