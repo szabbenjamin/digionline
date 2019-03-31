@@ -147,12 +147,9 @@ Olvasd a wiki-t: https://github.com/szabbenjamin/digionline/wiki
 
 **Visszajelzés, támogatás**
 
-Ha hibát találtál vedd fel a kapcsolatot velem, vagy vegyél fel hibajegyet itt, github-on.
+Ha hibát találtál írj ki hibajegyet, ha segítségre van szükséged, vagy csak követni szeretnéd a projekt állását keresd fel Telegram csoportunkat: https://t.me/szabbenjamin_digionline
 
-Ha pedig úgy érzed meghívnál egy sörre én nem ellenkezem. :) 
-
-Paypal, kapcsolatfelvétel: szabbenjamin #kukac gmail #pont com
-
+Ha támogatni szeretnéd munkámat paypal-on van erre lehetőséged: https://paypal.me/dicsportal
 
 
 Jó szórakozást!
