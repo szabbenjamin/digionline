@@ -1,0 +1,27 @@
+{
+  "name": "digionline",
+  "version": "2.0.0",
+  "description": "Digionline servlet",
+  "main": "main.js",
+  "scripts": {
+    "start": "tsc main.ts && node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szabbenjamin/digionline.git"
+  },
+  "author": "Benjamin Szabo <szabbenjamin@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/szabbenjamin/digionline/issues"
+  },
+  "homepage": "https://github.com/szabbenjamin/digionline#readme",
+  "dependencies": {
+    "@types/node": "^10.12.0",
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "request": "^2.88.0",
+    "jquery": "^3.3.1",
+    "jsdom": "^12.2.0"
+  }
+}
