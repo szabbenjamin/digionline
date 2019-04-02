@@ -61,10 +61,13 @@ typings/
 .idea
 
 # Config
-config.js
+config.ts
+
+# Typescript specific
+.js
 
 # Project specific
-channels.m3u
-engine/package-lock.json
-epg.timestamp
-tvheadend_channels.m3u
+log/
+package-lock.json
+channels_IPTV.m3u8
+channels_tvheadend.m3u8
