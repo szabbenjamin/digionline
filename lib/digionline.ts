@@ -3,6 +3,7 @@ import CONFIG from "../config";
 import Log from "./log";
 import * as jsdom from 'jsdom';
 import FileHandler from "./file";
+import Epg from "./epg";
 
 const { JSDOM } = jsdom;
 
@@ -27,10 +28,14 @@ class Digionline {
     constructor(cb : () => void) {
         this.login(success => {
             if (success) {
-                this.getChannelList(() => {
+                this.getChannelList(channelList => {
                     cb();
                     this.generateChannelList();
-                    // TODO: Asszinkron EPG generálás
+                    if (CONFIG.epg.needle) {
+                        const epgEngine = new Epg();
+                        epgEngine.setChannels(channelList);
+                        epgEngine.generateEpg();
+                    }
                 });
             }
         });
@@ -215,4 +220,4 @@ class Digionline {
     }
 }
 
-export default Digionline;
+export {Digionline, ChannelInterface, PlayerInterface};

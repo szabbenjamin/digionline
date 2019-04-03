@@ -1,5 +1,5 @@
-import Digionline from "./lib/digionline";
 import Webconnect from "./lib/webconnect";
+import {Digionline} from "./lib/digionline";
 
 class Main {
     constructor() {

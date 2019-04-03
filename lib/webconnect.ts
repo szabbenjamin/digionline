@@ -1,5 +1,5 @@
 import * as http from 'http';
-import Digionline from "./digionline";
+import {Digionline} from "./digionline";
 import Log from "./log";
 import CONFIG from "../config";
 import FileHandler from "./file";
@@ -14,7 +14,7 @@ class Webconnect {
             if (get.indexOf('/channel/') !== -1) {
                 this.getChannel(get, response);
             }
-            else if (get.indexOf('.m3u8') !== -1) {
+            else if (get.indexOf('.m3u8') !== -1 || get.indexOf('.xml') !== -1) {
                 this.getFile(get, response);
             }
             else {
