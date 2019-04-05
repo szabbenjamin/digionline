@@ -14,6 +14,7 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get install -y nodejs git
 apt-get install -y npm
 npm install typescript -g
+
 #git clone https://github.com/szabbenjamin/digionline
 git clone --branch testing_v2 https://github.com/szabbenjamin/digionline #tesztidőszakra
 cd digionline
@@ -26,6 +27,7 @@ chmod +x digionline.sh
 
 npm install
 cp config.sample.ts config.ts
+touch epg.xml
 echo "Add meg bejelentkezesi adataidat..."
 sleep 5
 nano config.ts

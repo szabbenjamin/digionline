@@ -9,6 +9,7 @@ import Common from "./common";
 import CONFIG from "../config";
 import {ChannelInterface} from "./digionline";
 import Log from "./log";
+import FileHandler from "./file";
 
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -243,6 +244,8 @@ class Epg {
             epgTimestampPath = './epg.timestamp',
             epgUrls     = this.getChannelEpgUrls();
 
+
+
         let lastUpgrade;
         try {
             lastUpgrade = new Date(fs.readFileSync(epgTimestampPath).toString());
@@ -258,6 +261,7 @@ class Epg {
         } else {
             Log.write('EPG ujratoltese...');
         }
+        FileHandler.writeFile('./epg.xml', '');
 
         /**
          * XML legyártása
@@ -282,7 +286,7 @@ class Epg {
                 name            = channelElement.name,
                 id              = `id${channelElement.id}`;
 
-            process.stdout.write(name + "... ");
+            Log.write(`EPG betoltese: ${name}...`)
             if (typeof epgUrls[id] !== 'undefined') {
                 epgChannels += self.getChannelEpg(channelIndex, name);
                 self.loadEPG(epgUrls[id], function (shows) {
@@ -298,7 +302,6 @@ class Epg {
                     }
                 });
             }
-            process.stdout.write("kesz\n");
         }, 4 * 1000);
 
         fs.writeFileSync(epgTimestampPath, (new Date()).toString());
