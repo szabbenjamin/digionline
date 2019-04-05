@@ -278,6 +278,7 @@ class Epg {
             if (channel_list_temp.length === 0) {
                 clearInterval(progress);
                 writeXml();
+                fs.writeFileSync(epgTimestampPath, (new Date()).toString());
                 return;
             }
 
@@ -303,8 +304,6 @@ class Epg {
                 });
             }
         }, 4 * 1000);
-
-        fs.writeFileSync(epgTimestampPath, (new Date()).toString());
 
         /**
          * XML újragyártása beállított időközönként
