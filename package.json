@@ -4,7 +4,8 @@
   "description": "Digionline servlet",
   "main": "main.js",
   "scripts": {
-    "start": "tsc main.ts && node main.js"
+    "start": "node main.js",
+    "test": "tsc main.ts && node main.js"
   },
   "repository": {
     "type": "git",

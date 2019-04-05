@@ -25,6 +25,8 @@ class Digionline {
     private lastHello : Date;
     private player : Array<PlayerInterface> = [];
 
+    private channel : ChannelInterface | null;
+
     constructor(cb : () => void) {
         this.login(success => {
             if (success) {
@@ -40,10 +42,11 @@ class Digionline {
             }
         });
         this.lastHello = new Date();
+        this.channel = null;
     }
 
     private login(cb : (success : boolean) => void) : void {
-        Log.write('Login');
+        Log.write('Login digionline.hu');
         Common.request({
             uri: 'https://digionline.hu/login',
             method: 'GET'
@@ -89,6 +92,7 @@ class Digionline {
     }
 
     public getChannelList(cb : (channelList : Array<ChannelInterface>) => void) : void {
+        Log.write('Loading channel list...');
         Common.request({
             uri: 'https://digionline.hu/csatornak',
             method: 'GET'
@@ -108,13 +112,13 @@ class Digionline {
                     category: category
                 });
             });
-            Log.write(`Betoltott csatornak:`, this.channelList.length);
+            Log.write(`Channels loaded`, this.channelList.length);
             cb(this.channelList);
         });
     }
 
     private generateChannelList() : void {
-        Log.write('Generating channel list...');
+        Log.write('Generating channel list...', '.m3u8');
         let simpleIPTVList = `#EXTM3U tvg-shift="${Common.getStaticTimeZoneOffset()}"\n`,
             tvheadendList = simpleIPTVList;
 
@@ -149,6 +153,12 @@ class Digionline {
     }
 
     public getChannel(id, cb : (channel : ChannelInterface) => void) : void {
+        if (this.channel && this.channel.id === id) {
+            Log.write('Channel full cache', id, this.channel.name);
+            cb(this.channel);
+            return;
+        }
+
         const loadChannel = response => {
             let r = response.split('https://online.digi.hu/api/streams/playlist/')[1]
                 .split('.m3u8');
@@ -171,7 +181,9 @@ class Digionline {
                 });
 
                 const channel = this.getChannelById(id);
-                channel.url = videoStreamUrl || backupVideoStreamUrl;
+                channel.url = (videoStreamUrl || backupVideoStreamUrl).split('&_t=')[0];
+
+                this.channel = channel;
 
                 cb(channel);
             });
@@ -212,7 +224,7 @@ class Digionline {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             }, response => {
-                Log.write('Hello sending packet...', response);
+                Log.write('Hello packet sent...', response);
             });
             this.lastHello = new Date();
         }

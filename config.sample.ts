@@ -26,8 +26,8 @@ const CONFIG = {
         needle: true,
         // minden inditaskor generaljunk EPG-t?
         forceUpdate: false,
-        // EPG idohatar
-        timeout: 1
+        // EPG idohatar oraban
+        timeout: 72
     }
 };
 

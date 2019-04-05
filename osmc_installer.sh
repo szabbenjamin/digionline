@@ -46,6 +46,7 @@ WorkingDirectory=/home/osmc/digionline
 [Install]
 WantedBy=multi-user.target" > digionline.service
 
+tsc main.ts
 cp digionline.service /etc/systemd/system
 systemctl start digionline
 systemctl enable digionline

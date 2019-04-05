@@ -244,8 +244,6 @@ class Epg {
             epgTimestampPath = './epg.timestamp',
             epgUrls     = this.getChannelEpgUrls();
 
-
-
         let lastUpgrade;
         try {
             lastUpgrade = new Date(fs.readFileSync(epgTimestampPath).toString());
@@ -253,9 +251,12 @@ class Epg {
             lastUpgrade = new Date('2000-01-01');
         }
 
+        // XML outdate idő órában számítva
+        const diffTime = CONFIG.epg.timeout * 60 * 60;
+
         if (CONFIG.epg.forceUpdate) {
             Log.write('EPG kenyszeritett ujratoltese...');
-        } else if (Common.diffTime(new Date(), lastUpgrade) < (CONFIG.epg.timeout * 60 * 60)) {
+        } else if (Common.diffTime(new Date(), lastUpgrade) < diffTime) {
             Log.write('EPG naprakesz');
             return;
         } else {
