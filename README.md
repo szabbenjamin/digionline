@@ -18,6 +18,10 @@ Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit v
 
 **Frissítések**
 
+V2.0.0
+
+- Refaktorálás a digionline.hu alapú rendszerre typescriptre
+
 v1.0.12
 
 - Passhash bevezetése. Részletek: https://github.com/szabbenjamin/digionline/wiki/Passhash-%C3%A9s-jelsz%C3%B3-haszn%C3%A1lata
@@ -115,7 +119,7 @@ Jelentkezz be ssh-n.
 
 `sudo su`
 
-`wget https://raw.githubusercontent.com/szabbenjamin/digionline/master/osmc_installer.sh && bash osmc_installer.sh`
+`wget https://raw.githubusercontent.com/szabbenjamin/digionline/testing_v2/osmc_installer.sh && bash osmc_installer.sh`
 
 Mindezt videón: https://www.youtube.com/watch?v=Fp03feTzXWg
 
