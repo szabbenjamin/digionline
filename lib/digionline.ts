@@ -152,10 +152,16 @@ class Digionline {
         throw new Error();
     }
 
+    private getStampedChannel() : ChannelInterface {
+        const timestamp = Math.floor(Date.now() / 1000);
+        this.channel.url = `${this.channel.url.split('&_t=')[0]}&_t=${timestamp}`;
+        return this.channel;
+    }
+
     public getChannel(id, cb : (channel : ChannelInterface) => void) : void {
         if (this.channel && this.channel.id === id) {
             Log.write('Channel full cache', id, this.channel.name);
-            cb(this.channel);
+            cb(this.getStampedChannel());
             return;
         }
 
@@ -181,11 +187,11 @@ class Digionline {
                 });
 
                 const channel = this.getChannelById(id);
-                channel.url = (videoStreamUrl || backupVideoStreamUrl).split('&_t=')[0];
+                channel.url = (videoStreamUrl || backupVideoStreamUrl);
 
                 this.channel = channel;
 
-                cb(channel);
+                cb(this.getStampedChannel());
             });
         };
 
