@@ -4,6 +4,7 @@ import Log from "./log";
 import * as jsdom from 'jsdom';
 import FileHandler from "./file";
 import Epg from "./epg";
+import {log} from "util";
 
 const { JSDOM } = jsdom;
 
@@ -68,7 +69,7 @@ class Digionline {
                         Log.write(`Logged in: ${CONFIG.login.email}`);
                     }
                     else {
-                        Log.error(`Sikertelen belepes`, '1');
+                        Log.error(`Sikertelen belepes (helyes a felhasznalonev es jelszo?)`, '1');
                     }
                     cb(loggedIn);
                 });
@@ -86,8 +87,13 @@ class Digionline {
             method: 'GET'
         }, response => {
             const dom = new JSDOM(response);
-            const loggedEmail = dom.window.document.querySelector('.in-user').textContent.trim();
-            loggedIn(loggedEmail === CONFIG.login.email);
+            if (dom.window.document.querySelector('.in-user')) {
+                const loggedEmail = dom.window.document.querySelector('.in-user').textContent.trim();
+                loggedIn(loggedEmail === CONFIG.login.email);
+            }
+            else {
+                loggedIn(false);
+            }
         });
     }
 
@@ -230,6 +236,14 @@ class Digionline {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             }, response => {
+                const r = JSON.parse(response);
+                Log.write(r);
+                if (Object(r).error === true) {
+                    this.login(() => {
+                        this.channel = null;
+                        Log.write('Logged in');
+                    });
+                }
                 Log.write('Hello packet sent...', response);
             });
             this.lastHello = new Date();
