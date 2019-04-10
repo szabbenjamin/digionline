@@ -36,11 +36,11 @@ V2.0.0
 
 - Közel teljes refaktorálás a digionline.hu alapú rendszerére. A program használata, a konfiguráció, a működés teljes egészében megváltozott. Részletekért kérlek látogasd meg a [wiki](https://github.com/szabbenjamin/digionline/wiki/V2-how:to)-t
 
-A korábbi, már kifutott v1-es rendszer frissítéseinek listája [itt](https://github.com/szabbenjamin/digionline/wiki/V1-changelog) található:
+A korábbi, már kifutott v1-es rendszer frissítéseinek listája [itt](https://github.com/szabbenjamin/digionline/wiki/V1-changelog) található.
 
 **Tudnivalók az alkalmazás frissítéséről**
 
-A v1.x.x kezdetű főverzióban a régi onlineplayer.digi.hu oldalra való hivatkozás és az alkalmazás kódjának elavultsága tette szükségessé, hogy új főverzió készüljön. E főverzió semmilyen mértékben nem kompatibilis a korábbival, így újratelepítés szükséges annak beállításához. Alább összeszedtem az átállással kapcsolatos legfontosabb tudnivalókat.
+A v1.x.x kezdetű főverzióban a régi onlineplayer.digi.hu oldalra való hivatkozás, a digi rendszerének/backendnek megváltoztatása és az alkalmazás kódjának elavultsága tette szükségessé, hogy új főverzió készüljön. E főverzió semmilyen mértékben nem kompatibilis a korábbival, így újratelepítés szükséges annak beállításához. Alább összeszedtem az átállással kapcsolatos legfontosabb tudnivalókat.
 
  - [Frissítés a v1-ről az új v2-es verzióra](https://github.com/szabbenjamin/digionline/wiki/V2-how:to-%C3%A1t%C3%A1ll%C3%A1s)
  
