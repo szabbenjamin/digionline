@@ -1,1 +1,1 @@
-git pull origin testing_v2 && tsc main.ts
+git pull origin master && tsc main.ts
