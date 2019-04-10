@@ -70,8 +70,5 @@ Ha támogatni szeretnéd a munkámat (vagy meg szeretnél hívni egy sörre) pay
 
 
 
-Egyéb kapcsolatfelvétel, jogi információk: szabbenjamin #kukac gmail #pont com
-
-
 
 Jó szórakozást!
