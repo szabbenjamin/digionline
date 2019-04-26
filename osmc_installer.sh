@@ -1,55 +1,60 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ]
-  then echo "Futtasd root modban. Ird be: sudo su"
-  exit
+DIGI_DIR=/home/osmc/digionline
+if [ ! -d $DIGI_DIR ]; then
+    echo "A digionline mappa nem talalhato" >&2
+    exit 1
 fi
 
 echo "DIGIOnline servlet telepito (v2) indul...";
 
-sleep 2;
-
-apt-get update;
+sudo apt-get update
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-apt-get install -y nodejs git
-apt-get install -y npm
-npm install typescript -g
+sudo apt-get install -y nodejs npm
+sudo npm install typescript -g
 
-git clone https://github.com/szabbenjamin/digionline
-cd digionline
+cd $DIGI_DIR
 
-echo "#!/bin/bash
+git remote add upstream https://github.com/szabbenjamin/digionline.git
+
+cat > digionline.sh <<EOL
+#!/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-cd /home/osmc/digionline
-npm start" > digionline.sh
+cd $DIGI_DIR
+npm start
+EOL
 chmod +x digionline.sh
 
 npm install
-cp config.sample.ts config.ts
 touch epg.xml
-echo "Add meg bejelentkezesi adataidat..."
-sleep 5
-nano config.ts
-echo "[Unit]
+
+if [ ! -f config.ts ]; then
+    cp config.sample.ts config.ts
+    echo "Add meg bejelentkezesi adataidat..."
+    $EDITOR config.ts
+else
+    echo "OK. A meglevo config-ot hasznaljuk"
+fi
+
+cat > digionline.service <<EOL
+[Unit]
 Description=digionline servlet app
 
 [Service]
-ExecStart=/home/osmc/digionline/digionline.sh
+ExecStart=$DIGI_DIR/digionline.sh
 Restart=always
 User=root
 Group=root
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
-WorkingDirectory=/home/osmc/digionline
+WorkingDirectory=$DIGI_DIR
 
 [Install]
-WantedBy=multi-user.target" > digionline.service
+WantedBy=multi-user.target
+EOL
 
 tsc main.ts
-cp digionline.service /etc/systemd/system
-systemctl start digionline
-systemctl enable digionline
+sudo cp digionline.service /etc/systemd/system
+sudo systemctl start digionline
+sudo systemctl enable digionline
 
-echo "deb http://apt.osmc.tv krypton main" >> /etc/apt/sources.list
-apt-get update
-apt-get -y dist-upgrade && reboot
