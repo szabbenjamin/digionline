@@ -53,8 +53,12 @@ WorkingDirectory=$DIGI_DIR
 WantedBy=multi-user.target
 EOL
 
+printf "forditas... "
 tsc main.ts
+echo kesz
+
 sudo cp digionline.service /etc/systemd/system
+sudo systemctl daemon-reload
 sudo systemctl start digionline
 sudo systemctl enable digionline
 
