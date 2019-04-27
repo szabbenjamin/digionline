@@ -31,6 +31,7 @@ touch epg.xml
 if [ ! -f config.ts ]; then
     cp config.sample.ts config.ts
     echo "Add meg bejelentkezesi adataidat..."
+    sleep 5
     $EDITOR config.ts
 else
     echo "OK. A meglevo config-ot hasznaljuk"
