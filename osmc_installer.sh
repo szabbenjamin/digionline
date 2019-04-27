@@ -32,6 +32,9 @@ if [ ! -f config.ts ]; then
     cp config.sample.ts config.ts
     echo "Add meg bejelentkezesi adataidat..."
     sleep 5
+    if [[ -z "$EDITOR" ]]; then
+        EDITOR=nano
+    fi
     $EDITOR config.ts
 else
     echo "OK. A meglevo config-ot hasznaljuk"
