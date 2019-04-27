@@ -1,0 +1,17 @@
+#!/bin/bash
+DB_DIR=$HOME/.kodi/userdata/Database
+
+printf "database cleanup..."
+rm $DB_DIR/Epg*.db $DB_DIR/TV*.db
+echo done
+
+printf "mediacenter restart..."
+service mediacenter restart
+echo done
+
+WAIT_TIME=5
+printf "waiting $WAIT_TIME seconds..."
+sleep $WAIT_TIME
+
+echo "fresh database:"
+ls -hal $DB_DIR/Epg*.db $DB_DIR/TV*.db
