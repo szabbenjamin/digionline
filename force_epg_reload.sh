@@ -1,17 +1,18 @@
 #!/bin/bash
 DB_DIR=$HOME/.kodi/userdata/Database
 
-printf "database cleanup..."
+printf "TV adatbazis torles... "
 rm $DB_DIR/Epg*.db $DB_DIR/TV*.db
-echo done
+echo kesz
 
-printf "mediacenter restart..."
+printf "kodi ujrainditas... "
 service mediacenter restart
-echo done
+echo kesz
 
 WAIT_TIME=5
-printf "waiting $WAIT_TIME seconds..."
+printf "varunk $WAIT_TIME masodpercet... "
 sleep $WAIT_TIME
+echo kesz
 
-echo "fresh database:"
+echo "a friss adatbazis ellenorzese"
 ls -hal $DB_DIR/Epg*.db $DB_DIR/TV*.db
