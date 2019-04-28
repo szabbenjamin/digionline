@@ -13,7 +13,7 @@ interface ChannelInterface {
     logoUrl : string,
     id : number,
     url : string | null,
-    category: number
+    category: string
 }
 
 interface PlayerInterface {
@@ -108,7 +108,50 @@ class Digionline {
                 const name : string = channelBox.querySelector('.channels__name').textContent.trim();
                 const logoUrl : string = channelBox.querySelector('img').src;
                 const id : number = Number(channelBox.querySelector('.favorite').getAttribute('data-id'));
-                const category : number = Number(channelBox.getAttribute('data-category'));
+                const categoryNumber : number = Number(channelBox.getAttribute('data-category'));
+
+                /* A csatorna kategóriát számként kapjuk meg, úgyhogy itt szépen
+                 * átfordítjuk szövegre (a szövegek a digi oldaláról lettek kimásolva).
+                 * MAYDO Meg lehetne szerezni ezeket szövegként egyből a digi-től? */
+                var category : string;
+                switch(categoryNumber) {
+                    case 2: {
+                        category = "zene";
+                        break;
+                    }
+                    case 3: {
+                        category = "gyerek";
+                        break;
+                    }
+                    case 4: {
+                        category = "sport";
+                        break;
+                    }
+                    case 5: {
+                        category = "film/sorozat/szórakoztató";
+                        break;
+                    }
+                    case 6: {
+                        category = "extra film";
+                        break;
+                    }
+                    case 7: {
+                        category = "életmód";
+                        break;
+                    }
+                    case 8: {
+                        category = "ismeretterjesztő";
+                        break;
+                    }
+                    case 9: {
+                        category = "hír/közszölgálati/kulturális";
+                        break;
+                    }
+                    default: {
+                        category = "ismeretlen";
+                        break;
+                    }
+                }
 
                 this.channelList.push({
                     name: name,
