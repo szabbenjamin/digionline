@@ -9,7 +9,7 @@ printf "kodi ujrainditas... "
 service mediacenter restart
 echo kesz
 
-WAIT_TIME=5
+WAIT_TIME=10
 printf "varunk $WAIT_TIME masodpercet... "
 sleep $WAIT_TIME
 echo kesz
