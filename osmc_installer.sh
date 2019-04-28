@@ -17,11 +17,15 @@ cd $DIGI_DIR
 
 git remote add upstream https://github.com/szabbenjamin/digionline.git
 
+DIGI_LOG=/var/log/digionline.log
 cat > digionline.sh <<EOL
 #!/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 cd $DIGI_DIR
-npm start
+DIGI_LOG=$DIGI_LOG
+mv $DIGI_LOG ${DIGI_LOG}.1
+echo "Log: $DIGI_LOG"
+npm start >$DIGI_LOG 2>&1
 EOL
 chmod +x digionline.sh
 
