@@ -1,8 +1,8 @@
 #!/bin/bash
 
-DIGI_DIR=/home/osmc/digionline
-if [ ! -d $DIGI_DIR ]; then
-    echo "A digionline mappa nem talalhato" >&2
+sudo -v
+if [ $? -ne 0 ]; then
+    echo "Nincs meg a szukseges sudo hozzaferes!" >&2
     exit 1
 fi
 
@@ -13,10 +13,28 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs npm
 sudo npm install typescript -g
 
+DIGI_DIR=/home/osmc/digionline
+ASK_ADD_REMOTE=false
+if [ ! -d $DIGI_DIR ]; then
+    git clone https://github.com/szabbenjamin/digionline
+else
+    ASK_ADD_REMOTE=true
+fi
 cd $DIGI_DIR
 
-git remote add upstream https://github.com/szabbenjamin/digionline.git
+if $ASK_ADD_REMOTE; then # fejleszto tamogatas
+    ADD_REMOTE_CMD="git remote add upstream https://github.com/szabbenjamin/digionline.git"
+    echo "'$ADD_REMOTE_CMD'"
+    read -rep "Vegrehajtsuk? (i/n) " ANSWER
+    if [[ ${ANSWER,,} =~ ^i$ ]]; then
+        $ADD_REMOTE_CMD
+        echo "Kesz"
+    else
+        echo "OK. Kihagyjuk ezt a lepest."
+    fi
+fi
 
+echo "Service elokeszites..."
 DIGI_LOG=/var/log/digionline.log
 cat > digionline.sh <<EOL
 #!/bin/bash
@@ -27,10 +45,9 @@ mv $DIGI_LOG ${DIGI_LOG}.1
 echo "Log: $DIGI_LOG"
 npm start >$DIGI_LOG 2>&1
 EOL
-chmod +x digionline.sh
 
 npm install
-touch epg.xml
+sudo touch epg.xml
 
 if [ ! -f config.ts ]; then
     cp config.sample.ts config.ts
@@ -61,12 +78,14 @@ WorkingDirectory=$DIGI_DIR
 WantedBy=multi-user.target
 EOL
 
-printf "forditas... "
+printf "Forditas... "
 tsc main.ts
 echo kesz
 
+printf "Service indul... "
 sudo cp digionline.service /etc/systemd/system
 sudo systemctl daemon-reload
-sudo systemctl start digionline
+sudo systemctl restart digionline
 sudo systemctl enable digionline
+echo kesz
 
