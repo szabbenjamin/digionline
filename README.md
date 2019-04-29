@@ -22,8 +22,6 @@ Töltsd le és telepítsd a raspberry pi-re az OSMC médialejátszót - ez egy r
 
 Jelentkezz be ssh-n.
 
-`sudo su`
-
 `wget https://raw.githubusercontent.com/szabbenjamin/digionline/master/osmc_installer.sh && bash osmc_installer.sh`
 
 **Telepítés egyéb linuxos rendszerekre**
@@ -57,6 +55,8 @@ Ezt itt találod:
 `Kiegészítők > Saját kiegészítők > PVR ügyfelek > PVR IPTV Simple Client > Beállítás > EPG beállítások > EPG időeltolás (óra)`
 
 ...a nyári időszámításban értelemszerűen 2.00-re kell állítani.
+
+OSMC-n a `force_epg_reload.sh` futtatásával ki lehet kenyszeriteni a beállítás életbelépését.
 
 _Ha hibát találsz githubon vegyél fel rá issue-t!_
 
