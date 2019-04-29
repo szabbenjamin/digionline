@@ -16,8 +16,9 @@ sudo npm install typescript -g
 DIGI_DIR=/home/osmc/digionline
 ASK_ADD_REMOTE=false
 if [ ! -d $DIGI_DIR ]; then
-    git clone https://github.com/szabbenjamin/digionline
+    git clone https://github.com/szabbenjamin/digionline $DIGI_DIR
 else
+    echo "OK. A meglevo $DIGI_DIR konyvtart hasznaljuk."
     ASK_ADD_REMOTE=true
 fi
 cd $DIGI_DIR
@@ -58,7 +59,7 @@ if [ ! -f config.ts ]; then
     fi
     $EDITOR config.ts
 else
-    echo "OK. A meglevo config-ot hasznaljuk"
+    echo "OK. A meglevo config-ot hasznaljuk."
 fi
 
 cat > digionline.service <<EOL
@@ -88,4 +89,24 @@ sudo systemctl daemon-reload
 sudo systemctl restart digionline
 sudo systemctl enable digionline
 echo kesz
+
+echo "Crontab telepites a logfile meretenek limitalasara..."
+DIGI_CRON=/tmp/digi.cron
+cat > $DIGI_CRON <<EOL
+# to ensure digionline logs cannot grow forever
+0 5 * * mon     service digionline restart
+EOL
+CRONTAB_CMD="crontab $DIGI_CRON"
+echo "'$CRONTAB_CMD'"
+cat $DIGI_CRON
+
+read -rep "Vegrehajtsuk (nyugi, az eredeti crontab-rol biztonsagi masolat keszul)? (i/n) " ANSWER
+if [[ ${ANSWER,,} =~ ^i$ ]]; then
+    ORIG_CRON=/tmp/orig.cron
+    crontab -l > $ORIG_CRON
+    $CRONTAB_CMD
+    echo "Kesz. Az eredeti crontab-ot ide mentettem: $ORIG_CRON"
+else
+    echo "OK. Kihagyjuk ezt a lepest."
+fi
 
