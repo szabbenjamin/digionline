@@ -22,7 +22,7 @@ Töltsd le és telepítsd a raspberry pi-re az OSMC médialejátszót - ez egy r
 
 Jelentkezz be ssh-n.
 
-`wget https://raw.githubusercontent.com/szabbenjamin/digionline/master/osmc_installer.sh && bash osmc_installer.sh`
+`wget -N https://raw.githubusercontent.com/szabbenjamin/digionline/master/osmc_installer.sh && bash osmc_installer.sh`
 
 **Telepítés egyéb linuxos rendszerekre**
 
