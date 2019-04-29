@@ -97,6 +97,55 @@ class Digionline {
         });
     }
 
+    /** 
+     * A csatorna kategóriát számként kapjuk meg, úgyhogy itt szépen
+     * átfordítjuk szövegre (a szövegek a digi oldaláról lettek kimásolva).
+     * MAYDO Meg lehetne szerezni ezeket szövegként egyből a digi-től?
+     * @param categoryNumber Az eredeti csatorna kategória szám a digi-től
+     * @return A kategória szöveges változata */
+    private getCategory(categoryNumber : number) : string {
+        var category : string;
+        switch(categoryNumber) {
+            case 2: {
+                category = "zene";
+                break;
+            }
+            case 3: {
+                category = "gyerek";
+                break;
+            }
+            case 4: {
+                category = "sport";
+                break;
+            }
+            case 5: {
+                category = "film/sorozat/szórakoztató";
+                break;
+            }
+            case 6: {
+                category = "extra film";
+                break;
+            }
+            case 7: {
+                category = "életmód";
+                break;
+            }
+            case 8: {
+                category = "ismeretterjesztő";
+                break;
+            }
+            case 9: {
+                category = "hír/közszölgálati/kulturális";
+                break;
+            }
+            default: {
+                category = "ismeretlen";
+                break;
+            }
+        }
+        return category;
+    }
+
     public getChannelList(cb : (channelList : Array<ChannelInterface>) => void) : void {
         Log.write('Loading channel list...');
         Common.request({
@@ -109,49 +158,7 @@ class Digionline {
                 const logoUrl : string = channelBox.querySelector('img').src;
                 const id : number = Number(channelBox.querySelector('.favorite').getAttribute('data-id'));
                 const categoryNumber : number = Number(channelBox.getAttribute('data-category'));
-
-                /* A csatorna kategóriát számként kapjuk meg, úgyhogy itt szépen
-                 * átfordítjuk szövegre (a szövegek a digi oldaláról lettek kimásolva).
-                 * MAYDO Meg lehetne szerezni ezeket szövegként egyből a digi-től? */
-                var category : string;
-                switch(categoryNumber) {
-                    case 2: {
-                        category = "zene";
-                        break;
-                    }
-                    case 3: {
-                        category = "gyerek";
-                        break;
-                    }
-                    case 4: {
-                        category = "sport";
-                        break;
-                    }
-                    case 5: {
-                        category = "film/sorozat/szórakoztató";
-                        break;
-                    }
-                    case 6: {
-                        category = "extra film";
-                        break;
-                    }
-                    case 7: {
-                        category = "életmód";
-                        break;
-                    }
-                    case 8: {
-                        category = "ismeretterjesztő";
-                        break;
-                    }
-                    case 9: {
-                        category = "hír/közszölgálati/kulturális";
-                        break;
-                    }
-                    default: {
-                        category = "ismeretlen";
-                        break;
-                    }
-                }
+                const category : string = this.getCategory(categoryNumber);
 
                 this.channelList.push({
                     name: name,
