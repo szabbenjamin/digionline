@@ -10,7 +10,7 @@ echo "DIGIOnline servlet telepito (v2) indul...";
 
 sudo apt-get update
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt-get install -y nodejs npm
+sudo apt-get install -y cron nodejs npm wget
 sudo npm install typescript -g
 
 DIGI_DIR=/home/osmc/digionline
