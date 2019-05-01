@@ -9,9 +9,15 @@ class Common {
      * @param cb
      */
     public static request(options : object, cb : (response : string) => void) : void {
-        request(options, (error, response, body) => {
-            cb(body);
-        });
+        try {
+            request(options, (error, response, body) => {
+                cb(body);
+            });
+        } catch (e) {
+            Log.write('Common@request', 'request error');
+            cb('');
+        }
+
     }
 
     /**
