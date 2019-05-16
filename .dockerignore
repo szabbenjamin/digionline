@@ -1,0 +1,25 @@
+# Logs
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Optional eslint cache
+.eslintcache
+
+# Config
+config.ts
+
+# Typescript specific
+*.js
+
+# Script files
+*.sh
+
+# Project specific
+log/
+package-lock.json
+channels_IPTV.m3u8
+channels_tvheadend.m3u8
+epg.xml
+epg.timestamp
