@@ -1,3 +1,1 @@
-#!/bin/bash
-git pull origin master
-rm epg.timestamp
+git pull origin master && tsc main.ts

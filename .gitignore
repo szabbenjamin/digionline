@@ -4,6 +4,8 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+debug
+debug.html
 
 # Runtime data
 pids
@@ -61,10 +63,17 @@ typings/
 .idea
 
 # Config
-config.js
+config.ts
+
+# Typescript specific
+*.js
 
 # Project specific
-channels.m3u
-engine/package-lock.json
+log/
+package-lock.json
+channels_IPTV.m3u8
+channels_tvheadend.m3u8
 epg.timestamp
-tvheadend_channels.m3u
+epg.xml
+digionline.sh
+digionline.service
