@@ -205,7 +205,7 @@ class Digionline {
             let playlistSplit = response.split(playlistBaseUrl);
             if (playlistSplit.length < 2) {
                 Log.write("Unexpected response! Are we logged in?");
-                this.hello(this.channel.id);
+                this.hello(id);
                 return;
             }
             let extensionSplit = playlistSplit[1].split(playlistExtension);
