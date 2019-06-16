@@ -1,55 +1,112 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ]
-  then echo "Futtasd root modban. Ird be: sudo su"
-  exit
+sudo -v
+if [ $? -ne 0 ]; then
+    echo "Nincs meg a szukseges sudo hozzaferes!" >&2
+    exit 1
 fi
 
 echo "DIGIOnline servlet telepito (v2) indul...";
 
-sleep 2;
-
-apt-get update;
+sudo apt-get update
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-apt-get install -y nodejs git
-apt-get install -y npm
-npm install typescript -g
+sudo apt-get install -y cron nodejs npm wget
+sudo npm install typescript -g
 
-git clone https://github.com/szabbenjamin/digionline
-cd digionline
+DIGI_DIR=/home/osmc/digionline
+ASK_ADD_REMOTE=false
+if [ ! -d $DIGI_DIR ]; then
+    git clone https://github.com/szabbenjamin/digionline $DIGI_DIR
+else
+    echo "OK. A meglevo $DIGI_DIR konyvtart hasznaljuk."
+    ASK_ADD_REMOTE=true
+fi
+cd $DIGI_DIR
 
-echo "#!/bin/bash
+if $ASK_ADD_REMOTE; then # fejleszto tamogatas
+    ADD_REMOTE_CMD="git remote add upstream https://github.com/szabbenjamin/digionline.git"
+    echo "'$ADD_REMOTE_CMD'"
+    read -rep "Vegrehajtsuk? (i/n) " ANSWER
+    if [[ ${ANSWER,,} =~ ^i$ ]]; then
+        $ADD_REMOTE_CMD
+        echo "Kesz"
+    else
+        echo "OK. Kihagyjuk ezt a lepest."
+    fi
+fi
+
+echo "Service elokeszites..."
+DIGI_LOG=/var/log/digionline.log
+cat > digionline.sh <<EOL
+#!/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-cd /home/osmc/digionline
-npm start" > digionline.sh
-chmod +x digionline.sh
+cd $DIGI_DIR
+DIGI_LOG=$DIGI_LOG
+mv $DIGI_LOG ${DIGI_LOG}.1
+echo "Log: $DIGI_LOG"
+npm start >$DIGI_LOG 2>&1
+EOL
 
 npm install
-cp config.sample.ts config.ts
-touch epg.xml
-echo "Add meg bejelentkezesi adataidat..."
-sleep 5
-nano config.ts
-echo "[Unit]
+sudo touch epg.xml
+
+if [ ! -f config.ts ]; then
+    cp config.sample.ts config.ts
+    echo "Add meg bejelentkezesi adataidat..."
+    sleep 5
+    if [[ -z "$EDITOR" ]]; then
+        EDITOR=nano
+    fi
+    $EDITOR config.ts
+else
+    echo "OK. A meglevo config-ot hasznaljuk."
+fi
+
+cat > digionline.service <<EOL
+[Unit]
 Description=digionline servlet app
 
 [Service]
-ExecStart=/home/osmc/digionline/digionline.sh
+ExecStart=$DIGI_DIR/digionline.sh
 Restart=always
 User=root
 Group=root
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
-WorkingDirectory=/home/osmc/digionline
+WorkingDirectory=$DIGI_DIR
 
 [Install]
-WantedBy=multi-user.target" > digionline.service
+WantedBy=multi-user.target
+EOL
 
+printf "Forditas... "
 tsc main.ts
-cp digionline.service /etc/systemd/system
-systemctl start digionline
-systemctl enable digionline
+echo kesz
 
-echo "deb http://apt.osmc.tv krypton main" >> /etc/apt/sources.list
-apt-get update
-apt-get -y dist-upgrade && reboot
+printf "Service indul... "
+sudo cp digionline.service /etc/systemd/system
+sudo systemctl daemon-reload
+sudo systemctl restart digionline
+sudo systemctl enable digionline
+echo kesz
+
+echo "Crontab telepites a logfile meretenek limitalasara..."
+DIGI_CRON=/tmp/digi.cron
+cat > $DIGI_CRON <<EOL
+# to ensure digionline logs cannot grow forever
+0 5 * * mon     service digionline restart
+EOL
+CRONTAB_CMD="crontab $DIGI_CRON"
+echo "'$CRONTAB_CMD'"
+cat $DIGI_CRON
+
+read -rep "Vegrehajtsuk (nyugi, az eredeti crontab-rol biztonsagi masolat keszul)? (i/n) " ANSWER
+if [[ ${ANSWER,,} =~ ^i$ ]]; then
+    ORIG_CRON=/tmp/orig.cron
+    crontab -l > $ORIG_CRON
+    $CRONTAB_CMD
+    echo "Kesz. Az eredeti crontab-ot ide mentettem: $ORIG_CRON"
+else
+    echo "OK. Kihagyjuk ezt a lepest."
+fi
+

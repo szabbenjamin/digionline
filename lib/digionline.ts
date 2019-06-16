@@ -13,7 +13,7 @@ interface ChannelInterface {
     logoUrl : string,
     id : number,
     url : string | null,
-    category: number
+    category: string
 }
 
 interface PlayerInterface {
@@ -21,11 +21,32 @@ interface PlayerInterface {
     loaded : Date
 }
 
+interface ChannelCategoryDictionary {
+    [categoryNumber: number] : string
+}
+
+function getCategoryMapping(categories : HTMLSelectElement) : ChannelCategoryDictionary {
+    let categoryMapping : ChannelCategoryDictionary = {};
+    if (!categories) {
+        Log.error("Cannot fetch the channel categories!");
+    }
+    else {
+        Log.write('Fetching channel categories...');
+        for (var i = 0; i < categories.options.length; i++) {
+            const category = categories.options[i];
+            if (category.text === "Összes") {
+                continue;
+            }
+            categoryMapping[Number(category.value)] = category.text;
+        }
+    }
+    return categoryMapping;
+}
+
 class Digionline {
     private channelList : Array<ChannelInterface> = [];
     private lastHello : Date;
     private player : Array<PlayerInterface> = [];
-
     private channel : ChannelInterface | null;
 
     constructor(cb : () => void) {
@@ -96,7 +117,7 @@ class Digionline {
             }
         });
     }
-
+    
     public getChannelList(cb : (channelList : Array<ChannelInterface>) => void) : void {
         Log.write('Loading channel list...');
         Common.request({
@@ -104,11 +125,16 @@ class Digionline {
             method: 'GET'
         }, response => {
             const dom = new JSDOM(response);
+
+            const categories = dom.window.document.getElementById("categories");
+            const categoryMapping = getCategoryMapping(categories);
+            
             dom.window.document.querySelectorAll('.channel').forEach(channelBox => {
                 const name : string = channelBox.querySelector('.channels__name').textContent.trim();
                 const logoUrl : string = channelBox.querySelector('img').src;
                 const id : number = Number(channelBox.querySelector('.favorite').getAttribute('data-id'));
-                const category : number = Number(channelBox.getAttribute('data-category'));
+                const categoryNumber : number = Number(channelBox.getAttribute('data-category'));
+                const category : string = categoryMapping[categoryNumber];
 
                 this.channelList.push({
                     name: name,
