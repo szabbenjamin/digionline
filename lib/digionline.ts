@@ -28,7 +28,7 @@ interface ChannelCategoryDictionary {
 function getCategoryMapping(categories : HTMLSelectElement) : ChannelCategoryDictionary {
     let categoryMapping : ChannelCategoryDictionary = {};
     if (!categories) {
-        Log.error("Cannot fetch the channel categories!");
+        Log.write("Cannot fetch the channel categories!");
     }
     else {
         Log.write('Fetching channel categories...');
@@ -134,7 +134,8 @@ class Digionline {
                 const logoUrl : string = channelBox.querySelector('img').src;
                 const id : number = Number(channelBox.querySelector('.favorite').getAttribute('data-id'));
                 const categoryNumber : number = Number(channelBox.getAttribute('data-category'));
-                const category : string = categoryMapping[categoryNumber];
+                const category : string = ((categoryNumber in categoryMapping) ?
+                    categoryMapping[categoryNumber] : String(categoryNumber));
 
                 this.channelList.push({
                     name: name,
@@ -198,10 +199,23 @@ class Digionline {
         }
 
         const loadChannel = response => {
-            let r = response.split('https://online.digi.hu/api/streams/playlist/')[1]
-                .split('.m3u8');
+            const playlistBaseUrl = "https://online.digi.hu/api/streams/playlist/";
+            const playlistExtension = ".m3u8";
 
-            const playlistUrl = `https://online.digi.hu/api/streams/playlist/${r[0]}.m3u8`;
+            let playlistSplit = response.split(playlistBaseUrl);
+            if (playlistSplit.length < 2) {
+                Log.write("Unexpected response! Are we logged in?");
+                this.hello(id);
+                return;
+            }
+            let extensionSplit = playlistSplit[1].split(playlistExtension);
+            if (extensionSplit.length < 2) {
+                // game over!
+                Log.error("Unexpected response", extensionSplit);
+            }
+            let playlistName = extensionSplit[0];
+
+            const playlistUrl = `${playlistBaseUrl}${playlistName}${playlistExtension}`;
 
             Common.request({
                 uri: playlistUrl,
@@ -228,7 +242,9 @@ class Digionline {
         };
 
         const channelKey = `id_${id}`;
-        if (typeof this.player[channelKey] === 'undefined' || (typeof this.player[channelKey] !== 'undefined' && Common.diffTime(this.player[channelKey].loaded, new Date()) > 5)) {
+        if (typeof this.player[channelKey] === 'undefined'
+        || (typeof this.player[channelKey] !== 'undefined'
+         && Common.diffTime(this.player[channelKey].loaded, new Date()) > 5)) {
             Common.request({
                 uri: `https://digionline.hu/player/${id}`,
                 method: 'GET'
@@ -274,7 +290,6 @@ class Digionline {
             });
             this.lastHello = new Date();
         }
-
     }
 }
 
