@@ -26,16 +26,16 @@ cd $DIGI_DIR
 if $ASK_ADD_REMOTE; then # fejleszto tamogatas
     ADD_REMOTE_CMD="git remote add upstream https://github.com/szabbenjamin/digionline.git"
     echo "'$ADD_REMOTE_CMD'"
-    read -rep "Vegrehajtsuk? (i/n) " ANSWER
+    read -rep "Letoltsuk a legujabb verziot? (i/n) " ANSWER
     if [[ ${ANSWER,,} =~ ^i$ ]]; then
         $ADD_REMOTE_CMD
         echo "Kesz"
     else
-        echo "OK. Kihagyjuk ezt a lepest."
+        echo "OK. Kihagytuk ezt a lepest."
     fi
 fi
 
-echo "Service elokeszites..."
+echo "Service beallitasanak elokeszitese..."
 DIGI_LOG=/var/log/digionline.log
 cat > digionline.sh <<EOL
 #!/bin/bash
@@ -59,7 +59,7 @@ if [ ! -f config.ts ]; then
     fi
     $EDITOR config.ts
 else
-    echo "OK. A meglevo config-ot hasznaljuk."
+    echo "A mar meglevo config-ot hasznaljuk."
 fi
 
 cat > digionline.service <<EOL
@@ -90,7 +90,7 @@ sudo systemctl restart digionline
 sudo systemctl enable digionline
 echo kesz
 
-echo "Crontab telepites a logfile meretenek limitalasara..."
+echo "Crontab konfiguralas a logfile meretenek limitalasara..."
 DIGI_CRON=/tmp/digi.cron
 cat > $DIGI_CRON <<EOL
 # to ensure digionline logs cannot grow forever
@@ -100,13 +100,13 @@ CRONTAB_CMD="crontab $DIGI_CRON"
 echo "'$CRONTAB_CMD'"
 cat $DIGI_CRON
 
-read -rep "Vegrehajtsuk (nyugi, az eredeti crontab-rol biztonsagi masolat keszul)? (i/n) " ANSWER
+read -rep "Menthetem az uj crontab-ot? Az eredeti crontab-rol biztonsagi masolat keszul. (i/n) " ANSWER
 if [[ ${ANSWER,,} =~ ^i$ ]]; then
     ORIG_CRON=/tmp/orig.cron
     crontab -l > $ORIG_CRON
     $CRONTAB_CMD
-    echo "Kesz. Az eredeti crontab-ot ide mentettem: $ORIG_CRON"
+    echo "Kesz. Az eredeti crontab-ot ide masoltam: $ORIG_CRON"
 else
-    echo "OK. Kihagyjuk ezt a lepest."
+    echo "Nem frissitettuk a crontab-ot."
 fi
 

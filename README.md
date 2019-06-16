@@ -30,6 +30,18 @@ Kezd itt: [Wiki](https://github.com/szabbenjamin/digionline/wiki/V2-how:to:linux
 
 **Frissítések**
 
+V2.1.0
+
+Köszönet a közreműködésért [istvans](https://github.com/istvans) -nak! Az okosabb telepítő miatt megkapta egyből a 2.1-es minor update jelzőt.
+
+ - Dockerfile
+ 
+ - Okosabb telepítő
+ 
+ - Kategóriák név szerinti betöltése
+ 
+ - Stabilitási problémák javítása
+
 V2.0.0
 
 - Közel teljes refaktorálás a digionline.hu alapú rendszerére. A program használata, a konfiguráció, a működés teljes egészében megváltozott. Részletekért kérlek látogasd meg a [wiki](https://github.com/szabbenjamin/digionline/wiki/V2-how:to)-t
