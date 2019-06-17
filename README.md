@@ -58,6 +58,12 @@ Támpontokat adok itt: [Wiki](https://github.com/szabbenjamin/digionline/wiki/V2
 
 **Frissítések**
 
+V2.1.2
+
+Stabilitással kapcsolatos javítások
+
+- Abban az esetben ha a digitől nem érkezik (pedig kellene) a kívánt (pl hq minőségű) stream akkor az elérhető legjobb minőségűre vált át az app és jelez logban adáshibát
+
 V2.1.1
 
 - Hibajavítás, okosabb telepítő visszavonása

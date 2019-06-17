@@ -158,11 +158,11 @@ class Digionline {
 
         this.channelList.forEach(channel => {
             const header = `#EXTINF:-${channel.id} tvg-id="id${channel.id}" tvg-name="${channel.name}" tvg-logo="${channel.logoUrl}" group-title="${channel.category}", ${channel.name} \n`,
-                url = `http://${CONFIG.webconnect.domain}:${CONFIG.webconnect.port}/channel/${channel.id}`;
+                url = `http://${CONFIG.webconnect.domain}:${CONFIG.webconnect.port}/channel/${channel.id}.m3u8`;
 
             // for Simple IPTV plugin
             simpleIPTVList += header;
-            simpleIPTVList += `${url}.m3u8\n`;
+            simpleIPTVList += `${url}\n`;
 
             // for TVHeadend
             tvheadendList += header;
@@ -210,7 +210,6 @@ class Digionline {
             }
             let extensionSplit = playlistSplit[1].split(playlistExtension);
             if (extensionSplit.length < 2) {
-                // game over!
                 Log.error("Unexpected response", extensionSplit);
             }
             let playlistName = extensionSplit[0];
@@ -221,11 +220,12 @@ class Digionline {
                 uri: playlistUrl,
                 method: 'GET'
             }, playlistContent => {
-                let videoStreamUrl = '',
-                    backupVideoStreamUrl = '';
+                const streams : Array<string> = [];
+                let videoStreamUrl = '';
+
                 playlistContent.split('\n').forEach(row => {
                     if (row.substring(0, 5) === 'https') {
-                        backupVideoStreamUrl = row;
+                        streams.push(row);
                         if (row.indexOf(`&q=${CONFIG.videoQuality}`) !== -1) {
                             videoStreamUrl = row;
                         }
@@ -233,13 +233,48 @@ class Digionline {
                 });
 
                 const channel = this.getChannelById(id);
-                channel.url = (videoStreamUrl || backupVideoStreamUrl);
+                channel.url = (videoStreamUrl || streams.pop());
 
-                this.channel = channel;
-
-                cb(this.getStampedChannel());
+                Common.request({
+                    uri: channel.url,
+                    method: 'GET'
+                }, response => {
+                    if (response.length < 10) {
+                        searchChannel(streams, response => {
+                            channel.url = response;
+                            this.channel = channel;
+                            cb(this.getStampedChannel());
+                        });
+                    }
+                    else {
+                        this.channel = channel;
+                        cb(this.getStampedChannel());
+                    }
+                });
             });
         };
+
+        function searchChannel(streams: Array<string>, cb: (response: string) => void) {
+            if (!streams.length) {
+                Log.error('Adashiba: a csatorna nem mukodik.');
+                cb('');
+                return;
+            }
+            const stream = streams.pop();
+
+            Common.request({
+                uri: stream,
+                method: 'GET'
+            }, response => {
+                if (response.length > 10) {
+                    cb(stream);
+                }
+                else {
+                    Log.write(`Adashiba: nincs jel!`, Common.getUrlVars(stream)['q']);
+                    searchChannel(streams, cb);
+                }
+            });
+        }
 
         const channelKey = `id_${id}`;
         if (typeof this.player[channelKey] === 'undefined'

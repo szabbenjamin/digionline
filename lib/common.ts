@@ -41,6 +41,15 @@ class Common {
     public static getStaticTimeZoneOffset() : number {
         return (new Date().getTimezoneOffset() / 60) * -1
     }
+
+    public static getUrlVars(uri) {
+        const vars = {};
+        uri.replace(/[?&]+([^=&]+)=([^&]*)/gi,
+            function(m,key,value) {
+                vars[key] = value;
+            });
+        return vars;
+    }
 }
 
 export default Common;

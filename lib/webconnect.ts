@@ -3,6 +3,7 @@ import {Digionline} from "./digionline";
 import Log from "./log";
 import CONFIG from "../config";
 import FileHandler from "./file";
+import Common from "./common";
 
 class Webconnect {
     private digi : Digionline;
@@ -46,11 +47,11 @@ class Webconnect {
                 let data = '';
                 proxyRes.on('data', function (chunk) {
                     data += chunk;
-                    Log.write('Buffering...', channel.id, channel.name);
+                    Log.write('Buffering...', channel.id, channel.name, Common.getUrlVars(channel.url)['q']);
                 });
                 proxyRes.on('end', function () {
                     response.end(data);
-                    Log.write('Playing...', channel.id, channel.name);
+                    Log.write('Playing...', channel.id, channel.name, Common.getUrlVars(channel.url)['q']);
                     self.digi.hello(channel.id);
                 });
                 proxyRes.on('error', function () {
