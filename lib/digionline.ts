@@ -117,7 +117,7 @@ class Digionline {
             }
         });
     }
-    
+
     public getChannelList(cb : (channelList : Array<ChannelInterface>) => void) : void {
         Log.write('Loading channel list...');
         Common.request({
@@ -128,7 +128,7 @@ class Digionline {
 
             const categories = dom.window.document.getElementById("categories");
             const categoryMapping = getCategoryMapping(categories);
-            
+
             dom.window.document.querySelectorAll('.channel').forEach(channelBox => {
                 const name : string = channelBox.querySelector('.channels__name').textContent.trim();
                 const logoUrl : string = channelBox.querySelector('img').src;
@@ -162,7 +162,7 @@ class Digionline {
 
             // for Simple IPTV plugin
             simpleIPTVList += header;
-            simpleIPTVList += `${url}\n`;
+            simpleIPTVList += `${url}.m3u8\n`;
 
             // for TVHeadend
             tvheadendList += header;

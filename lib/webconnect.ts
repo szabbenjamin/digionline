@@ -38,7 +38,7 @@ class Webconnect {
 
     private getChannel(get : string, response : any) : void {
         const self = this;
-        const id : number = Number(get.replace('/channel/', ''));
+        const id : number = Number(get.replace('/channel/', '').replace('.m3u8', ''));
 
         this.digi.getChannel(id, channel => {
             const channelUrl = channel.url.replace('https', 'http');
