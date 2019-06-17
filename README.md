@@ -16,19 +16,53 @@ Fontos tudni, hogy e program nem hivatalos kiadás, működéséért garanciát 
 
 Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit vegyél fel github-on issue-t vagy kérdezz [Telegram](https://t.me/szabbenjamin_digionline) csatornánkon és segítünk!
 
-**Telepítés Raspberry Pi OSMC rendszerre**
+**Ajánlott, tesztelt környezet**
 
-Töltsd le és telepítsd a raspberry pi-re az OSMC médialejátszót - ez egy rPI-re való Kodi verzió.
+- [OSMC](https://osmc.tv/download/), azaz KODI variáns Raspberry Pi-re
 
-Jelentkezz be ssh-n.
+_Legutoljára tesztelt hivatalos verzió: Kodi 18.3-RC1 (2019-05-19), OSMC May 2019 2019.05-2_
+
+
+
+**Hogyan telepítsem Raspberry Pi OSMC rendszerre?**
+
+* Töltsd le és telepítsd a raspberry pi-re az OSMC médialejátszót.
+
+* Jelentkezz be ssh-n.
+
+* Kövesd bejelentkezést követően az alábbiakat:
+
+`sudo su`
 
 `wget -N https://raw.githubusercontent.com/szabbenjamin/digionline/master/osmc_installer.sh && bash osmc_installer.sh`
 
+A telepítő automatikusan letölti, telepíti a futtatókörnyezetet, megkér a felhasználónév, jelszó megadására, frissíti a telepített verziót, majd újraindul
+
+* Újraindulást követően várj kb 5-10 percet míg a háttérben az elektronikus programújságot (EPG) első alkalommal betölti
+
+* PVR bővítmények között Simple IPTV client beállításait nyisd meg, fájlszinten tallózd be a channels_IPTV.m3u8 és epg.xml fájlokat
+
+* Szükség esetén korrigálj az epg időeltolódásán
+
+* Mentsd a beállításokat és engedélyezd a plugint, ekkor kapnod kell értesítést arról, hogy talált a KODI csatornákat
+
+Enjoy!
+
+_Az alkalmazás karbantartása az én időmbe és részben saját anyagi ráfordításomba is kerül így ha gondolod van lehetőséget támogatni a projektet: https://paypal.me/dicsportal_
+
 **Telepítés egyéb linuxos rendszerekre**
 
-Kezd itt: [Wiki](https://github.com/szabbenjamin/digionline/wiki/V2-how:to:linux)
+Támpontokat adok itt: [Wiki](https://github.com/szabbenjamin/digionline/wiki/V2-how:to:linux)
+
+
 
 **Frissítések**
+
+V2.1.1
+
+- Hibajavítás, okosabb telepítő visszavonása
+
+- Legújabb KODI-val való linuxon együtt-nem-működés javítása
 
 V2.1.0
 
