@@ -8,19 +8,19 @@ Szükséges hozzá már meglévő hozzáférés, melyet abban az esetben regiszt
 
 Egy előfizetéshez jelenleg max három digionline account regisztrálható, a servlet egyszerre csak egy accountot kezel, így egyidőben egy servlet egyetlen lejátszót képes kiszolgálni.
 
-E program indításakor legenerál egy m3u és egy xml fájlt - az előbbiben a teljes csatornalista az utóbbiban 5 napra előre elektronikus programujság (EPG) található, melyet képes lejátszani a VLC, de teljes műsorújsággal együtt a KODI is.
+E program indításakor legenerál egy m3u és egy xml fájlt - az előbbiben a teljes csatornalista az utóbbiban 5 napra előre elektronikus programujság (EPG) található, melyet képes lejátszani a VLC, de teljes műsorújsággal együtt a KODI is. Mielőtt megkérdeznéd, igen, kell ennek az alkalmazásnak folyamatosan futnia amikor tévézel és nem, nem elég az m3u és az xml fájlt "csak valahova átmásolni".
 
-Kodi-n az IPTV Simple Client-et kell beállítani, majd bekapcsolni - miután a servlet elindult a háttérben megnyithatóvá válnak a digionline rendszerében elérhető csatornák HD minőségben.
+Miközben ez az alkalmazás fut Kodi-n az IPTV Simple Client-et kell beállítani, majd bekapcsolni - miután a servlet elindult a háttérben megnyithatóvá válnak a digionline rendszerében elérhető csatornák HD minőségben.
 
-Fontos tudni, hogy e program nem hivatalos kiadás, működéséért garanciát nem vállalok.
+_Fontos tudni, hogy e program nem hivatalos kiadás, működéséért garanciát nem vállalok._
 
-Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit vegyél fel github-on issue-t vagy kérdezz [Telegram](https://t.me/szabbenjamin_digionline) csatornánkon és segítünk!
+Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit vegyél fel github-on [hibajegyet](https://github.com/szabbenjamin/digionline/issues/new) vagy kérdezz [Telegram](https://t.me/szabbenjamin_digionline) csatornánkon és segítünk!
 
 **Ajánlott, tesztelt környezet**
 
 - [OSMC](https://osmc.tv/download/), azaz KODI variáns Raspberry Pi-re
 
-_Legutoljára tesztelt hivatalos verzió: Kodi 18.3-RC1 (2019-05-19), OSMC May 2019 2019.05-2_
+_Legutoljára tesztelt hivatalos verzió: Kodi 18.5_
 
 
 
@@ -52,11 +52,13 @@ _Az alkalmazás karbantartása az én időmbe és részben saját anyagi ráford
 
 **Telepítés egyéb linuxos rendszerekre**
 
-Támpontokat adok itt: [Wiki](https://github.com/szabbenjamin/digionline/wiki/V2-how:to:linux)
-
-
+Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbenjamin/digionline/wiki/Telep%C3%ADt%C3%A9s-Ubuntu-18.04-rendszerre)
 
 **Frissítések**
+
+V2.1.3
+
+- A Digi rendszerében fellépő SSL hibára ideiglenes javítás. [Részletek](https://github.com/szabbenjamin/digionline/issues/25)
 
 V2.1.2
 
