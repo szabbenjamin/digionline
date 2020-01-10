@@ -28,7 +28,12 @@ const CONFIG = {
         forceUpdate: false,
         // EPG idohatar oraban
         timeout: 72
-    }
+    },
+    /**
+     * SSL biztonsagos kapcsolat hasznalata. Csak akkor kapcsold ki ha feltetlenul szukeges!
+     * Reszletek: https://github.com/szabbenjamin/digionline/issues/25
+     */
+    secureConnection: true,
 };
 
 export default CONFIG;

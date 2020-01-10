@@ -73,8 +73,30 @@ class Digionline {
             uri: 'https://digionline.hu/login',
             method: 'GET'
         }, respose => {
-            const dom = new JSDOM(respose);
-            const token : string = dom.window.document.querySelector('[name="_token"]').value;
+            const dom = new JSDOM(respose),
+                tokenElement = dom.window.document.querySelector('[name="_token"]');
+
+            if (tokenElement === null) {
+                console.log(`
+                
+#########################################
+
+Token beolvasasi hiba tortent. 
+Valoszinuleg a Digi login rendszere nem mukodik megfeleloen, vagy SSL hiba van az oldalukon. 
+Probald meg a config.ts fajlban a "secureConnection: false" beallitast. 
+FONTOS!
+A secureConnection false ertekre allitasa biztonsagi kockazatokkal jar!
+
+Reszletek: https://github.com/szabbenjamin/digionline/issues/25
+
+#########################################
+                
+                `);
+                Log.error('Token hiba.');
+                process.exit();
+            }
+
+            const token : string = tokenElement.value;
             Common.request({
                 uri: 'https://digionline.hu/login',
                 method: 'POST',
