@@ -56,6 +56,10 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
+V2.1.4
+
+- Biztonsági javítások
+
 V2.1.3
 
 - A Digi rendszerében fellépő SSL hibára ideiglenes javítás. [Részletek](https://github.com/szabbenjamin/digionline/issues/25)

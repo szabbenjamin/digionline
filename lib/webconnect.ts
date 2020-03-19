@@ -10,15 +10,23 @@ class Webconnect {
     private server : any;
 
     public constructor() {
+        const filesAllowed = [
+            '/channels_IPTV.m3u8',
+            '/channels_tvheadend.m3u8',
+            '/epg.xml'
+        ];
+
         this.server = http.createServer((request, response) => {
             const get = decodeURIComponent(request.url);
+
             if (get.indexOf('/channel/') !== -1) {
                 this.getChannel(get, response);
             }
-            else if (get.indexOf('.m3u8') !== -1 || get.indexOf('.xml') !== -1) {
+            else if (filesAllowed.indexOf(get) !== -1) {
                 this.getFile(get, response);
             }
             else {
+                Log.write('File or service not found', get);
                 response.end();
             }
         });

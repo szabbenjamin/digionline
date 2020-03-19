@@ -193,6 +193,8 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
 
         FileHandler.writeFile('channels_IPTV.m3u8', simpleIPTVList);
         FileHandler.writeFile('channels_tvheadend.m3u8', tvheadendList);
+
+        Log.write('Channel list ready.');
     }
 
     private getChannelById(id : number) : ChannelInterface {
