@@ -56,6 +56,18 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
+V2.2.0
+
+Stabilitással és új funkciókkal kapcsolatos kiadás
+
+- channels.csv generálása, hogy ha szükséged van rá olvashatóbb, feldolgozhatóbb csatornalistát kapj
+
+- Kezelje le a program ha egy digionline rendszerében nem létező csatornát akarok lekérni és az eredeti oldal 404-et dob
+
+- Elérhető fájlok/források URL-je a könnyebb kezdéshez, illetve eligazodáshoz konzolon indításkor
+
+- Mivel változott a digionline csatornák ID-ja (számozása), így akik nem a dinamikusan frissülő IPTV m3u8 fájlt használják hanem például tvheadend-et azoknak készült egy fordító, hogy a régi ID-t meghívva annak megfelelő új párjára kerüljön átfordításra. A régi-új párokat a helpers/pairs.json fájl tartalmazza.
+
 V2.1.4
 
 - Biztonsági javítások

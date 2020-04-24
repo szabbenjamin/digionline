@@ -110,6 +110,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                 this.checkLoggedIn(loggedIn => {
                     if (loggedIn) {
                         Log.write(`Logged in: ${CONFIG.login.email}`);
+                        this.donateMeMsg();
                     }
                     else {
                         Log.error(`Sikertelen belepes (helyes a felhasznalonev es jelszo?)`, '1');
@@ -175,8 +176,8 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
     private generateChannelList() : void {
         Log.write('Generating channel list...', '.m3u8');
         let simpleIPTVList = `#EXTM3U tvg-shift="${Common.getStaticTimeZoneOffset()}"\n`,
-            tvheadendList = simpleIPTVList;
-
+            tvheadendList = simpleIPTVList,
+            csv = 'ID;Channel name;Category;Stream URL;Channel logo URL\n';
 
         this.channelList.forEach(channel => {
             const header = `#EXTINF:-${channel.id} tvg-id="id${channel.id}" tvg-name="${channel.name}" tvg-logo="${channel.logoUrl}" group-title="${channel.category}", ${channel.name} \n`,
@@ -189,10 +190,13 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
             // for TVHeadend
             tvheadendList += header;
             tvheadendList += `pipe:///usr/bin/ffmpeg -i ${url} -c copy -f mpegts pipe:1\n`;
+
+            csv += `${channel.id};${channel.name};${channel.category};${url};${channel.logoUrl}\n`;
         });
 
         FileHandler.writeFile('channels_IPTV.m3u8', simpleIPTVList);
         FileHandler.writeFile('channels_tvheadend.m3u8', tvheadendList);
+        FileHandler.writeFile('channels.csv', csv);
 
         Log.write('Channel list ready.');
     }
@@ -225,6 +229,11 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
         const loadChannel = response => {
             const playlistBaseUrl = "https://online.digi.hu/api/streams/playlist/";
             const playlistExtension = ".m3u8";
+
+            if (response.indexOf('404 - Tartalom nem található') !== -1) {
+                Log.error('Channel id is not found.');
+                return;
+            }
 
             let playlistSplit = response.split(playlistBaseUrl);
             if (playlistSplit.length < 2) {
@@ -320,7 +329,10 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
             Log.write(`loaded from cache`, channelKey);
             loadChannel(this.player[channelKey].response);
         }
+    }
 
+    private donateMeMsg() : void {
+        console.log('@\n@\n@\n@\n@ Ha támogatni szeretnéd a munkámat (vagy meg szeretnél hívni egy sörre, kávéra) Paypal-on van erre lehetőséged: https://paypal.me/dicsportal\n@\n@\n@');
     }
 
     /**

@@ -21,5 +21,6 @@ log/
 package-lock.json
 channels_IPTV.m3u8
 channels_tvheadend.m3u8
+channels.csv
 epg.xml
 epg.timestamp

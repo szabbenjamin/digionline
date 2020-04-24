@@ -10,7 +10,7 @@ class Log {
     }
 
     public static error (...input) : void {
-        Log.write(`################# FATAL (${input[1]}) #############`);
+        Log.write(`################# FATAL ERROR #############`);
         Log.write(...input);
         setTimeout(() => {
             process.exit();
