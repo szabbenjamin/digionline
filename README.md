@@ -56,6 +56,10 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
+V2.2.1
+
+- Epg xml generálás javítása. [Részletek](https://github.com/szabbenjamin/digionline/issues/29)
+
 V2.2.0
 
 Stabilitással és új funkciókkal kapcsolatos kiadás
