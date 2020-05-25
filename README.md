@@ -14,7 +14,7 @@ Miközben ez az alkalmazás fut Kodi-n az IPTV Simple Client-et kell beállítan
 
 _Fontos tudni, hogy e program nem hivatalos kiadás, működéséért garanciát nem vállalok._
 
-Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit vegyél fel github-on [hibajegyet](https://github.com/szabbenjamin/digionline/issues/new) vagy kérdezz [Telegram](https://linkref.winben.hu/szabbenjamin_digionline_servlet.html) csatornánkon és segítünk!
+Tisztelettel megkérlek, ha hibát találtál vagy ha csak nem értesz valamit vegyél fel github-on [hibajegyet](https://github.com/szabbenjamin/digionline/issues/new) vagy kérdezz [Telegram](https://t.me/szabbenjamin_digionline_servlet) csatornánkon és segítünk!
 
 **Ajánlott, tesztelt környezet**
 
@@ -138,7 +138,7 @@ _Ha hibát találsz githubon vegyél fel rá issue-t!_
 
 Sokat segítesz abban, hogy ha hibát találtál, észrevételed van felveszed a kapcsolatot velünk Telegram-on vagy kiírsz github issue-t!
 
-Telegram csoportunk elérhetősége: [https://linkref.winben.hu/szabbenjamin_digionline_servlet.html](https://linkref.winben.hu/szabbenjamin_digionline_servlet.html)
+Telegram csoportunk elérhetősége: [https://t.me/szabbenjamin_digionline_servlet](https://t.me/szabbenjamin_digionline_servlet)
 
 Ha támogatni szeretnéd a munkámat (vagy meg szeretnél hívni egy sörre) paypal-on van erre lehetőséged: [https://paypal.me/dicsportal](https://paypal.me/dicsportal)
 
