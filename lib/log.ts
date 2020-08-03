@@ -1,4 +1,5 @@
 import FileHandler from "./file";
+const findRemoveSync = require("find-remove");
 
 class Log {
     public static write (...input) : void {
@@ -15,6 +16,16 @@ class Log {
         setTimeout(() => {
             process.exit();
         }, 2000);
+    }
+
+    public static janitor(): void {
+        Log.write("7 napnal regebbi logfajlok torlese...");
+        findRemoveSync("log/", { extensions: [".log"], age: { seconds: 604800 } });
+
+        // naponta ismetlodhet
+        setTimeout(function () {
+            Log.janitor();
+        }, 24 * 60 * 60 * 1000);
     }
 }
 
