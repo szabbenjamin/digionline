@@ -1,23 +1,21 @@
 import Webconnect from "./lib/webconnect";
-import { Digionline } from "./lib/digionline";
+import {Digionline} from "./lib/digionline";
 import Log from "./lib/log";
 
 class Main {
-  constructor() {
-    Log.write(
-      `Digionline (${process.env.npm_package_version}) servlet starting...`
-    );
-    this.init();
-    Log.janitor();
-  }
+    constructor() {
+        Log.write(`Digionline (${process.env.npm_package_version}) servlet starting...`);
+        this.init();
+    }
 
-  public init() {
-    const digi = new Digionline(() => {
-      const server = new Webconnect();
-      server.setDigi(digi);
-      server.listen();
-    });
-  }
+    public init() {
+        const digi = new Digionline(() => {
+            const server = new Webconnect();
+            server.setDigi(digi);
+            server.listen();
+        });
+    }
+
 }
 
 new Main();
