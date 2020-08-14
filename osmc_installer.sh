@@ -52,5 +52,8 @@ systemctl start digionline
 systemctl enable digionline
 apt-get update
 apt-get upgrade
+
+echo "A telepítő lefutott, újraindítás 10 mp múlva";
+sleep 10
 reboot
 
