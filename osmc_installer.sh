@@ -27,7 +27,7 @@ chmod +x digionline.sh
 npm install
 cp config.sample.ts config.ts
 touch epg.xml
-echo "Add meg bejelentkezesi adataidat..."
+echo "Kerlek add meg bejelentkezesi adataidat... (Egy pillanat es nyilik a szerkeszto. Mentes: CTRL+X)"
 sleep 5
 nano config.ts
 mkdir log

@@ -6,6 +6,7 @@ class Main {
     constructor() {
         Log.write(`Digionline (${process.env.npm_package_version}) servlet starting...`);
         this.init();
+        Log.janitor();
     }
 
     public init() {
