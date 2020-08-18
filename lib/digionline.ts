@@ -12,7 +12,8 @@ interface ChannelInterface {
     logoUrl : string,
     id : number,
     url : string | null,
-    category: string
+    category: string,
+    index: number,
 }
 
 interface PlayerInterface {
@@ -43,6 +44,7 @@ function getCategoryMapping(categories : HTMLSelectElement) : ChannelCategoryDic
 }
 
 class Digionline {
+    private channelOrder : object = {};
     private channelList : Array<ChannelInterface> = [];
     private lastHello : Date;
     private player : Array<PlayerInterface> = [];
@@ -65,6 +67,7 @@ class Digionline {
         });
         this.lastHello = new Date();
         this.channel = null;
+        this.channelOrder = FileHandler.readJsonFile('helpers/epg_channel_urls.json') as Object;
     }
 
     private login(cb : (success : boolean) => void) : void {
@@ -172,14 +175,20 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                 const category : string = ((categoryNumber in categoryMapping) ?
                     categoryMapping[categoryNumber] : String(categoryNumber));
 
+                const index = Object.keys(this.channelOrder).indexOf('id' + id);
+                
                 this.channelList.push({
                     name: name,
                     logoUrl: logoUrl,
                     id: id,
                     url: null,
-                    category: category
+                    category: category,
+                    index: index
                 });
             });
+    
+            this.channelList.sort((a, b) => a.index - b.index);
+
             Log.write(`Channels loaded`, this.channelList.length);
             cb(this.channelList);
         });
