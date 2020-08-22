@@ -1,6 +1,6 @@
 {
   "name": "digionline",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Digionline servlet",
   "main": "main.js",
   "scripts": {
@@ -19,11 +19,11 @@
   "homepage": "https://github.com/szabbenjamin/digionline#readme",
   "dependencies": {
     "@types/node": "^10.12.0",
+    "find-remove": "^2.0.1",
     "fs": "0.0.1-security",
     "http": "0.0.0",
-    "request": "^2.88.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.1",
     "jsdom": "^12.2.0",
-    "find-remove": "^2.0.1"
+    "request": "^2.88.0"
   }
 }

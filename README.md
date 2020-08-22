@@ -56,6 +56,13 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
+V2.2.2
+
+- package.json csomag verziók frissítése
+- osmc installer frissítése (köszi [NH3CL](neutrino@poison-hosting.com))
+- régi logfájlok törlése (köszi [cSuwwi](github@dromax.hu))
+- műsorújság frissítése (köszi [cSuwwi](github@dromax.hu))
+
 V2.2.1
 
 - Epg xml generálás javítása. [Részletek](https://github.com/szabbenjamin/digionline/issues/29)
