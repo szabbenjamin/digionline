@@ -56,6 +56,14 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
+V2.2.3
+
+A feature-ökért köszönet [cSuwwi](github@dromax.hu)!
+
+- user agent update + minden digi/epg musor betoltesnel hasznalja
+- az epg file sorrendje alapjan tolti be a kodi csatornakat, nem abc sorrendben. szukseg szerint modosithato, az uj csatornak elore fognak kerulni
+- a kiwi tvbol tv2 kids lett, valtozott a csatorna szama is, epg fix
+
 V2.2.2
 
 - package.json csomag verziók frissítése
