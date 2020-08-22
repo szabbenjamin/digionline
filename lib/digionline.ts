@@ -4,7 +4,6 @@ import Log from "./log";
 import * as jsdom from 'jsdom';
 import FileHandler from "./file";
 import Epg from "./epg";
-import {log} from "util";
 
 const { JSDOM } = jsdom;
 
@@ -13,7 +12,8 @@ interface ChannelInterface {
     logoUrl : string,
     id : number,
     url : string | null,
-    category: string
+    category: string,
+    index: number,
 }
 
 interface PlayerInterface {
@@ -44,10 +44,12 @@ function getCategoryMapping(categories : HTMLSelectElement) : ChannelCategoryDic
 }
 
 class Digionline {
+    private channelOrder : object = {};
     private channelList : Array<ChannelInterface> = [];
     private lastHello : Date;
     private player : Array<PlayerInterface> = [];
     private channel : ChannelInterface | null;
+    private userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36';
 
     constructor(cb : () => void) {
         this.login(success => {
@@ -65,13 +67,17 @@ class Digionline {
         });
         this.lastHello = new Date();
         this.channel = null;
+        this.channelOrder = FileHandler.readJsonFile('helpers/epg_channel_urls.json') as Object;
     }
 
     private login(cb : (success : boolean) => void) : void {
         Log.write('Login digionline.hu');
         Common.request({
             uri: 'https://digionline.hu/login',
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'User-Agent': this.userAgent
+            }
         }, respose => {
             const dom = new JSDOM(respose),
                 tokenElement = dom.window.document.querySelector('[name="_token"]');
@@ -105,6 +111,9 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                     email: CONFIG.login.email,
                     password: CONFIG.login.password,
                     accept: '1'
+                },
+                headers: {
+                    'User-Agent': this.userAgent
                 }
             }, response => {
                 this.checkLoggedIn(loggedIn => {
@@ -128,7 +137,10 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
     public checkLoggedIn(loggedIn : (loggedIn : boolean) => void) : void {
         Common.request({
             uri: 'https://digionline.hu/',
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'User-Agent': this.userAgent
+            }
         }, response => {
             const dom = new JSDOM(response);
             if (dom.window.document.querySelector('.in-user')) {
@@ -145,7 +157,10 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
         Log.write('Loading channel list...');
         Common.request({
             uri: 'https://digionline.hu/csatornak',
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'User-Agent': this.userAgent
+            }
         }, response => {
             const dom = new JSDOM(response);
 
@@ -160,14 +175,20 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                 const category : string = ((categoryNumber in categoryMapping) ?
                     categoryMapping[categoryNumber] : String(categoryNumber));
 
+                const index = Object.keys(this.channelOrder).indexOf('id' + id);
+                
                 this.channelList.push({
                     name: name,
                     logoUrl: logoUrl,
                     id: id,
                     url: null,
-                    category: category
+                    category: category,
+                    index: index
                 });
             });
+    
+            this.channelList.sort((a, b) => a.index - b.index);
+
             Log.write(`Channels loaded`, this.channelList.length);
             cb(this.channelList);
         });
@@ -251,7 +272,10 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
 
             Common.request({
                 uri: playlistUrl,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'User-Agent': this.userAgent
+                }
             }, playlistContent => {
                 const streams : Array<string> = [];
                 let videoStreamUrl = '';
@@ -270,7 +294,10 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
 
                 Common.request({
                     uri: channel.url,
-                    method: 'GET'
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': this.userAgent
+                    }
                 }, response => {
                     if (response.length < 10) {
                         searchChannel(streams, response => {
@@ -297,7 +324,10 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
 
             Common.request({
                 uri: stream,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'User-Agent': this.userAgent
+                }
             }, response => {
                 if (response.length > 10) {
                     cb(stream);
@@ -315,7 +345,10 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
          && Common.diffTime(this.player[channelKey].loaded, new Date()) > 5)) {
             Common.request({
                 uri: `https://digionline.hu/player/${id}`,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'User-Agent': this.userAgent
+                }
             }, response => {
                 loadChannel(response);
                 this.player[channelKey] = {
@@ -346,7 +379,8 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                 method: 'GET',
                 headers: {
                     'Referer': `https://digionline.hu/player/${id}`,
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'User-Agent': this.userAgent
                 }
             }, response => {
                 const r = JSON.parse(response);
