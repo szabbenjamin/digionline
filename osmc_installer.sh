@@ -54,7 +54,7 @@ apt-get update
 apt-get upgrade
 
 echo "A telepítő lefutott, újraindítás szükséges";
-read -p "Akarod most újraindítani a rendszer? [I/N]" -n 1 -r
+read -p "Akarod most újraindítani a rendszert? [I/N]" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Ii]$ ]]
 then
