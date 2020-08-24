@@ -53,7 +53,12 @@ systemctl enable digionline
 apt-get update
 apt-get upgrade
 
-echo "A telepítő lefutott, újraindítás 10 mp múlva";
-sleep 10
-reboot
-
+echo "A telepítő lefutott, újraindítás szükséges";
+read -p "Akarod most újraindítani a rendszert? [I/N]" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Ii]$ ]]
+then
+    shutdown -r now
+else
+	echo "Újraindítás később"
+fi
