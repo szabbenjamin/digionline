@@ -56,6 +56,11 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
+V2.2.4
+
+- Docker konfig frissítése (köszi [Balint Kardos](balint@cardos.hu))
+- OSMC installer frissítése (köszi [NH3CL](neutrino@poison-hosting.com))
+
 V2.2.3
 
 A feature-ökért köszönet [cSuwwi](github@dromax.hu)!
