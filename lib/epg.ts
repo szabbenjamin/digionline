@@ -60,7 +60,7 @@ class Epg {
     private getChannelEpg (id, channelName) {
         var channel = this.channelTemplate
             .replace(':id', id)
-            .replace(':channelName', channelName);
+            .replace(':channelName', this.escapeXml(channelName));
 
         return channel;
     }
@@ -87,7 +87,7 @@ class Epg {
             .replace(':id', id)
             .replace(':start', this.formatDate(startCorrect))
             .replace(':end', this.formatDate(endCorrect))
-            .replace(':programme', programme)
+            .replace(':programme', this.escapeXml(programme))
             .replace(':startOffset', '+0100')
             .replace(':endOffset', '+0100')
             ;
@@ -121,6 +121,19 @@ class Epg {
         return '' + year+month+day+hour+minute+second;
     }
 
+    // https://stackoverflow.com/questions/7918868/how-to-escape-xml-entities-in-javascript
+    private escapeXml(unsafestr: string) {
+        return unsafestr.replace(/[<>&'"]/g, function (c) {
+        switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '\'': return '&apos;';
+            case '"': return '&quot;';
+            }
+        });
+    }
+    
     /**
      * Műsorok letöltése
      * @param epgUrl
