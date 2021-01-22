@@ -27,7 +27,9 @@ const CONFIG = {
         // minden inditaskor generaljunk EPG-t?
         forceUpdate: false,
         // EPG idohatar oraban
-        timeout: 72
+        timeout: 72,
+        // heti vagy aznapi lista letoltese: "mai"|"heti"
+        type: 'heti'
     },
     /**
      * SSL biztonsagos kapcsolat hasznalata. Csak akkor kapcsold ki ha feltetlenul szukeges!

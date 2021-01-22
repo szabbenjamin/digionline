@@ -42,6 +42,30 @@ class Epg {
         this.channelTemplate = '<channel id="id:id"><display-name lang="hu">:channelName</display-name></channel>\n';
         this.programmeTemplate = '<programme start=":start :startOffset" stop=":end :endOffset" channel="id:id"><title lang="hu">:programme</title></programme>\n';
         this.xmlContainer = '<?xml version="1.0" encoding="utf-8" ?><tv>:content</tv>';
+
+        Log.write(`EPG lista típusa: ${this.getEpgType()}`);
+    }
+
+    /**
+     * Hack arra, hogy ne csak a heti hanem napi EPG listát is le lehessen tölteni
+     * @param epgUrl
+     */
+    private modifyEpgType(epgUrl : string) : string {
+        if (this.getEpgType() === 'mai') {
+            return epgUrl.replace('heti', 'mai');
+        }
+        return epgUrl;
+    }
+
+    private getEpgType() : string {
+        //@ts-ignore
+        if (typeof CONFIG.epg.type !== 'undefined') {
+            //@ts-ignore
+            if (CONFIG.epg.type === 'mai') {
+                return 'mai';
+            }
+        }
+        return 'heti';
     }
 
     public setChannels (channelList : Array<ChannelInterface>) : void {
@@ -133,7 +157,7 @@ class Epg {
             }
         });
     }
-    
+
     /**
      * Műsorok letöltése
      * @param epgUrl
@@ -145,10 +169,12 @@ class Epg {
             'Content-Type' : 'application/x-www-form-urlencoded'
         };
 
-        let shows = [];
+        let shows = [],
+            // a későbbi felülírás esetére
+            channelEpgUrl = this.modifyEpgType(epgUrl);
 
         request.get(
-            epgUrl,
+            channelEpgUrl,
             {
                 headers: headers
             },
@@ -266,7 +292,9 @@ class Epg {
                     }
                 });
             }
-        }, 4 * 1000);
+        }, (this.getEpgType() === 'mai' ? 1 : 4) * 1000);
+
+
 
         /**
          * XML újragyártása beállított időközönként
