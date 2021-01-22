@@ -56,6 +56,12 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
+V2.2.5
+
+- műsorújság frissítése
+
+- Választható "mai", illetve "heti" műsorújság a config.ts fájlban. Kisebb, lassabb gép esetén a mai célszerűbb mivel így kevesebb adatot kell letölteni és feldolgozni az EPG generálásakor. Korábbi verziókról frissítés esetén alapértelmezett a "heti" beállítás. Módosításhoz másold át az epg-n belüli type sort a frissített config.sample.ts fájlból!
+
 V2.2.4
 
 - Docker konfig frissítése (köszi [Balint Kardos](balint@cardos.hu))
