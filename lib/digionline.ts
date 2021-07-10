@@ -4,6 +4,7 @@ import Log from "./log";
 import * as jsdom from 'jsdom';
 import FileHandler from "./file";
 import Epg from "./epg";
+import Config from "./config";
 
 const { JSDOM } = jsdom;
 
@@ -57,7 +58,7 @@ class Digionline {
                 this.getChannelList(channelList => {
                     cb();
                     this.generateChannelList();
-                    if (CONFIG.epg.needle) {
+                    if (Config.instance().epg.needle) {
                         const epgEngine = new Epg();
                         epgEngine.setChannels(channelList);
                         epgEngine.generateEpg();
@@ -108,8 +109,8 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                 method: 'POST',
                 formData: {
                     '_token': token,
-                    email: CONFIG.login.email,
-                    password: CONFIG.login.password,
+                    email: Config.instance().login.email,
+                    password: Config.instance().login.password,
                     accept: '1'
                 },
                 headers: {
@@ -118,7 +119,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
             }, response => {
                 this.checkLoggedIn(loggedIn => {
                     if (loggedIn) {
-                        Log.write(`Logged in: ${CONFIG.login.email}`);
+                        Log.write(`Logged in: ${Config.instance().login.email}`);
                         this.donateMeMsg();
                     }
                     else {
@@ -145,7 +146,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
             const dom = new JSDOM(response);
             if (dom.window.document.querySelector('.in-user')) {
                 const loggedEmail = dom.window.document.querySelector('.in-user').textContent.trim();
-                loggedIn(loggedEmail === CONFIG.login.email);
+                loggedIn(loggedEmail === Config.instance().login.email);
             }
             else {
                 loggedIn(false);
@@ -176,7 +177,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                     categoryMapping[categoryNumber] : String(categoryNumber));
 
                 const index = Object.keys(this.channelOrder).indexOf('id' + id);
-                
+
                 this.channelList.push({
                     name: name,
                     logoUrl: logoUrl,
@@ -186,7 +187,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                     index: index
                 });
             });
-    
+
             this.channelList.sort((a, b) => a.index - b.index);
 
             Log.write(`Channels loaded`, this.channelList.length);
@@ -202,7 +203,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
 
         this.channelList.forEach(channel => {
             const header = `#EXTINF:-${channel.id} tvg-id="id${channel.id}" tvg-name="${channel.name}" tvg-logo="${channel.logoUrl}" group-title="${channel.category}", ${channel.name} \n`,
-                url = `http://${CONFIG.webconnect.domain}:${CONFIG.webconnect.port}/channel/${channel.id}.m3u8`;
+                url = `http://${Config.instance().webconnect.domain}:${Config.instance().webconnect.port}/channel/${channel.id}.m3u8`;
 
             // for Simple IPTV plugin
             simpleIPTVList += header;
@@ -283,7 +284,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                 playlistContent.split('\n').forEach(row => {
                     if (row.substring(0, 5) === 'https') {
                         streams.push(row);
-                        if (row.indexOf(`&q=${CONFIG.videoQuality}`) !== -1) {
+                        if (row.indexOf(`&q=${Config.instance().videoQuality}`) !== -1) {
                             videoStreamUrl = row;
                         }
                     }

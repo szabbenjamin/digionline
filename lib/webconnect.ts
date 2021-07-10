@@ -4,6 +4,7 @@ import Log from "./log";
 import CONFIG from "../config";
 import FileHandler from "./file";
 import Common from "./common";
+import Config from "./config";
 
 class Webconnect {
     private digi : Digionline;
@@ -41,13 +42,13 @@ class Webconnect {
     private showServices (filesAllowed : Array<string>) : void {
         Log.write('===Elerheto csatornalista formatumok kulso lejatszokhoz===');
         for (let file of filesAllowed) {
-            Log.write(`http://${CONFIG.webconnect.domain}:${CONFIG.webconnect.port}${file}`);
+            Log.write(`http://${Config.instance().webconnect.domain}:${Config.instance().webconnect.port}${file}`);
         }
     }
 
     public listen() : void {
         try {
-            this.server.listen(CONFIG.webconnect.port);
+            this.server.listen(Config.instance().webconnect.port);
             Log.write('Server is listening');
         } catch (e) {
             Log.error(e);

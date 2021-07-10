@@ -10,6 +10,7 @@ import CONFIG from "../config";
 import {ChannelInterface} from "./digionline";
 import Log from "./log";
 import FileHandler from "./file";
+import Config from "./config";
 
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -58,10 +59,8 @@ class Epg {
     }
 
     private getEpgType() : string {
-        //@ts-ignore
-        if (typeof CONFIG.epg.type !== 'undefined') {
-            //@ts-ignore
-            if (CONFIG.epg.type === 'mai') {
+        if (typeof Config.instance().epg.type !== 'undefined') {
+            if (Config.instance().epg.type === 'mai') {
                 return 'mai';
             }
         }
@@ -118,27 +117,27 @@ class Epg {
     }
 
     private formatDate (date) {
-        let d       = new Date(date);
-        let year    = d.getFullYear();
-        let month : any   = d.getMonth()+1;
-        let day : any    = d.getDate();
-        let hour : any   = d.getHours();
-        let minute : any = d.getMinutes();
-        let second : any = d.getSeconds();
+        let d = new Date(date);
+        let year = d.getFullYear();
+        let month = String(d.getMonth()+1);
+        let day = String(d.getDate());
+        let hour = String(d.getHours());
+        let minute = String(d.getMinutes());
+        let second = String(d.getSeconds());
 
-        if (month.toString().length == 1) {
+        if (month.length == 1) {
             month = '0' + month;
         }
-        if (day.toString().length == 1) {
+        if (day.length == 1) {
             day = '0'+day;
         }
-        if (hour.toString().length == 1) {
+        if (hour.length == 1) {
             hour = '0'+hour;
         }
-        if (minute.toString().length == 1) {
+        if (minute.length == 1) {
             minute = '0'+minute;
         }
-        if (second.toString().length == 1) {
+        if (second.length == 1) {
             second = '0'+second;
         }
 
@@ -240,9 +239,9 @@ class Epg {
         }
 
         // XML outdate idő órában számítva
-        const diffTime = CONFIG.epg.timeout * 60 * 60;
+        const diffTime = Config.instance().epg.timeout * 60 * 60;
 
-        if (CONFIG.epg.forceUpdate) {
+        if (Config.instance().epg.forceUpdate) {
             Log.write('EPG kenyszeritett ujratoltese...');
         } else if (Common.diffTime(new Date(), lastUpgrade) < diffTime) {
             Log.write('EPG naprakesz');
@@ -302,7 +301,7 @@ class Epg {
         setTimeout(function () {
             Log.write('XML ujragyartasa...');
             self.generateEpg();
-        }, CONFIG.epg.timeout * 60 * 60 * 1000);
+        }, Config.instance().epg.timeout * 60 * 60 * 1000);
     }
 }
 

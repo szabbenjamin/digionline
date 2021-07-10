@@ -12,10 +12,9 @@ sleep 2;
 apt-get update;
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get install -y nodejs git
-apt-get install -y npm
-npm install typescript -g
+curl -sL https://npmjs.org/install.sh
 
-git clone https://github.com/szabbenjamin/digionline
+git clone https://github.com/szabbenjamin/digionline | sudo -E bash -
 cd digionline
 
 echo "#!/bin/bash

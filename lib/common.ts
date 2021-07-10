@@ -1,11 +1,12 @@
 import Log from "./log";
 import CONFIG from "../config";
+import Config from "./config";
 
 /**
  * Hibás ssl tanúsítvány "figyelembe nem vétele" szükség esetén
  * Részletekért lásd: https://github.com/szabbenjamin/digionline/issues/25
  */
-if (typeof CONFIG['secureConnection'] !== 'undefined' && !CONFIG['secureConnection']) {
+if (typeof Config.instance()['secureConnection'] !== 'undefined' && !Config.instance()['secureConnection']) {
     // @ts-ignore
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 

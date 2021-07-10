@@ -1,0 +1,18 @@
+{
+    "webconnect": {
+        "domain": "localhost",
+        "port": 9999
+    },
+    "videoQuality": "hq",
+    "login": {
+        "email": "",
+        "password": ""
+    },
+    "epg": {
+        "needle": true,
+        "forceUpdate": false,
+        "timeout": 72,
+        "type": "heti"
+    },
+    "secureConnection": true
+}
