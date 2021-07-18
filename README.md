@@ -56,7 +56,7 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
-V2.2.6
+V2.2.8
 
 - config.ts átvezetése config.json fájlba. Ezentúl nem szükséges config fájl módosítgatását követően npm test-et futtatni. Ezenkívül egy öntesztben program indításakor az alkalmazás leteszteli a config.json fájlt. A változtatás a dockerfájlba is átvezetésre került. *Erre a verzióra való frissítés esetén szükséges a config.json fájlt kitölteni!*
 
