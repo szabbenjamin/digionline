@@ -1,5 +1,4 @@
 import Common from "./common";
-import CONFIG from "../config";
 import Log from "./log";
 import * as jsdom from 'jsdom';
 import FileHandler from "./file";

@@ -6,7 +6,6 @@
  * https://github.com/szabbenjamin/digionline
  */
 import Common from "./common";
-import CONFIG from "../config";
 import {ChannelInterface} from "./digionline";
 import Log from "./log";
 import FileHandler from "./file";

@@ -1,7 +1,6 @@
 import * as http from 'http';
 import {Digionline} from "./digionline";
 import Log from "./log";
-import CONFIG from "../config";
 import FileHandler from "./file";
 import Common from "./common";
 import Config from "./config";

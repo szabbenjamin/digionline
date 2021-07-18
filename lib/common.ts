@@ -1,5 +1,4 @@
 import Log from "./log";
-import CONFIG from "../config";
 import Config from "./config";
 
 /**
