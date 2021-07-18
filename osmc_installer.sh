@@ -24,11 +24,11 @@ npm start" > digionline.sh
 chmod +x digionline.sh
 
 npm install
-cp config.sample.ts config.ts
+cp config.sample.json config.json
 touch epg.xml
 echo "Kerlek add meg bejelentkezesi adataidat... (Egy pillanat es nyilik a szerkeszto. Mentes: CTRL+X)"
 sleep 5
-nano config.ts
+nano config.json
 mkdir log
 echo "[Unit]
 Description=digionline servlet app
