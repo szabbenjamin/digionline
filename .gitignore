@@ -62,8 +62,6 @@ typings/
 # PhpStorm ignore
 .idea
 
-# Config
-config.ts
 
 # Typescript specific
 *.js
@@ -78,4 +76,6 @@ epg.timestamp
 epg.xml
 digionline.sh
 digionline.service
+
+# Config
 config.json
