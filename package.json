@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "tsc main.ts && node main.js"
+    "test": "tsc main.ts && node main.js",
+    "build": "tsc main.ts"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "http": "0.0.0",
     "jquery": "^3.5.1",
     "jsdom": "^12.2.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "typescript": "^4.4.2"
   }
 }
