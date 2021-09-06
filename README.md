@@ -30,12 +30,18 @@ _Legutoljára tesztelt hivatalos verzió: Kodi 18.5_
 
 * Jelentkezz be ssh-n.
 
-* Kövesd bejelentkezést követően az alábbiakat:
+* Raspberry pi 1-2-3 verziók esetén:
 
 `sudo su`
 
 `wget -N https://raw.githubusercontent.com/szabbenjamin/digionline/master/osmc_installer.sh && bash osmc_installer.sh`
 
+* Raspberry pi 4 esetén:
+
+`sudo su`
+
+`wget -N https://raw.githubusercontent.com/szabbenjamin/digionline/master/raspi4_osmc_installer.sh && bash raspi4_osmc_installer.sh`
+ 
 A telepítő automatikusan letölti, telepíti a futtatókörnyezetet, megkér a felhasználónév, jelszó megadására, frissíti a telepített verziót, majd újraindul
 
 * Újraindulást követően várj kb 5-10 percet míg a háttérben az elektronikus programújságot (EPG) első alkalommal betölti
@@ -55,6 +61,12 @@ _Az alkalmazás karbantartása az én időmbe és részben saját anyagi ráford
 Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbenjamin/digionline/wiki/Telep%C3%ADt%C3%A9s-Ubuntu-18.04-rendszerre)
 
 **Frissítések**
+
+V2.2.9
+
+- Raspberry Pi 4-el kompatibilis OSMC verzió támogatásának bevezetése. 
+
+Az eddigi osmc_installer.sh a régi, "klasszik" raspi-kra való, a raspi4_osmc_installer.sh pedig a Raspberry Pi 4-en és 400-ason futtatható OSMC-t támogatja. Az eltérés az új telepítőben azért van szükség mivel a régebbi, elavult hardverek nem támogatják az új node futtatókörnyzetet, az új hardver pedig a régieket.
 
 V2.2.8
 
