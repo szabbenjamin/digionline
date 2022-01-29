@@ -24,6 +24,12 @@ const request = require('request').defaults({jar: true});
 
 class Common {
     /**
+     * Utolsó beküldött request ideje
+     * @private
+     */
+    public static lastRequest : Date = new Date();
+
+    /**
      * http request options paraméterei alapján cb response-ba kerülő válasszal
      * @param options
      * @param cb
@@ -32,6 +38,7 @@ class Common {
         try {
             request(options, (error, response, body) => {
                 cb(body);
+                Common.lastRequest = new Date();
             });
         } catch (e) {
             Log.write('Common@request', 'request error');

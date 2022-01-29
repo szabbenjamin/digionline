@@ -49,6 +49,7 @@ class Digionline {
     private lastHello : Date;
     private player : Array<PlayerInterface> = [];
     private channel : ChannelInterface | null;
+    private lastChannelId : number;
     private userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36';
 
     constructor(cb : () => void) {
@@ -56,7 +57,13 @@ class Digionline {
             if (success) {
                 this.getChannelList(channelList => {
                     cb();
-                    this.generateChannelList();
+
+                    this.generateChannelList(() => {
+                        this.channelOrder = FileHandler.readJsonFile('helpers/epg_channel_urls.json') as Object;
+                        this.lastChannelId = Number(Object.keys(this.channelOrder)[0].replace('id', ''));
+                        this.initWatchdog();
+                    });
+
                     if (Config.instance().epg.needle) {
                         const epgEngine = new Epg();
                         epgEngine.setChannels(channelList);
@@ -67,7 +74,6 @@ class Digionline {
         });
         this.lastHello = new Date();
         this.channel = null;
-        this.channelOrder = FileHandler.readJsonFile('helpers/epg_channel_urls.json') as Object;
     }
 
     private login(cb : (success : boolean) => void) : void {
@@ -194,7 +200,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
         });
     }
 
-    private generateChannelList() : void {
+    private generateChannelList(cb : () => void) : void {
         Log.write('Generating channel list...', '.m3u8');
         let simpleIPTVList = `#EXTM3U tvg-shift="${Common.getStaticTimeZoneOffset()}"\n`,
             tvheadendList = simpleIPTVList,
@@ -220,6 +226,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
         FileHandler.writeFile('channels.csv', csv);
 
         Log.write('Channel list ready.');
+        cb();
     }
 
     private getChannelById(id : number) : ChannelInterface {
@@ -246,6 +253,8 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
             cb(this.getStampedChannel());
             return;
         }
+
+        this.lastChannelId = id;
 
         const loadChannel = response => {
             const playlistBaseUrl = "https://online.digi.hu/api/streams/playlist/";
@@ -395,6 +404,15 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
             });
             this.lastHello = new Date();
         }
+    }
+
+    private initWatchdog() : void {
+        setInterval(() => {
+            if (Common.diffTime(new Date(), Common.lastRequest) > 60) {
+                Log.write('Watchdog...');
+                this.hello(this.lastChannelId);
+            }
+        }, 20 * 1000);
     }
 }
 
