@@ -7,6 +7,14 @@ import Config from "./config";
 
 const { JSDOM } = jsdom;
 
+const safeJsonParse = (json) => {
+    try {
+        return JSON.parse(json);
+    } catch (e) {
+        return { error: true };
+    }
+}
+
 interface ChannelInterface {
     name : string,
     logoUrl : string,
@@ -392,7 +400,7 @@ Reszletek: https://github.com/szabbenjamin/digionline/issues/25
                     'User-Agent': this.userAgent
                 }
             }, response => {
-                const r = JSON.parse(response);
+                const r = safeJsonParse(response);
                 Log.write(r);
                 if (Object(r).error === true) {
                     this.login(() => {
