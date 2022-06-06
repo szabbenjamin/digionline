@@ -62,6 +62,11 @@ Telepítési segédlet Ubuntu 18.04 rendszerre: [Wiki](https://github.com/szabbe
 
 **Frissítések**
 
+V2.2.11
+
+- EPG update [#70](https://github.com/szabbenjamin/digionline/issues/70)
+
+
 V2.2.10
 
 - Hosszabb tétlenség esetén munkamenet fenntartása, munkamenet lejárata esetén gyorsabb bejelentkezés. [Részletek](https://github.com/szabbenjamin/digionline/issues/66)
