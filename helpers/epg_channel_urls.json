@@ -17,10 +17,9 @@
   "id290": "https://musor.tv/heti/tvmusor/SPORT2",
   "id255": "https://musor.tv/heti/tvmusor/EUROSPORT",
   "id256": "https://musor.tv/heti/tvmusor/EUROSPORT2",
-  "id248": "https://musor.tv/heti/tvmusor/DIGISPORT1",
-  "id249": "https://musor.tv/heti/tvmusor/DIGISPORT2",
-  "id250": "https://musor.tv/heti/tvmusor/DIGISPORT3",
-  "id303": "https://musor.tv/heti/tvmusor/FISHING_HUNTING",
+  "id248": "https://musor.tv/heti/tvmusor/MATCH4",
+  "id249": "https://musor.tv/heti/tvmusor/ARENA4",
+  "id322": "https://musor.tv/heti/tvmusor/FISHING_HUNTING",
   "id288": "https://musor.tv/heti/tvmusor/SPEKTRUM",
   "id252": "https://musor.tv/heti/tvmusor/DISCOVERY",
   "id276": "https://musor.tv/heti/tvmusor/NATGEO",
@@ -55,7 +54,6 @@
   "id306": "https://musor.tv/heti/tvmusor/TV2_COMEDY",
   "id291": "https://musor.tv/heti/tvmusor/SUPERTV2",
   "id258": "https://musor.tv/heti/tvmusor/FILMNOW",
-
   "id313": "https://musor.tv/heti/tvmusor/AXN",
   "id314": "https://musor.tv/heti/tvmusor/CBSREALITY",
   "id312": "https://musor.tv/heti/tvmusor/FILMCAFE",
@@ -66,6 +64,5 @@
   "id319": "https://musor.tv/heti/tvmusor/TEENNICK",
   "id309": "https://musor.tv/heti/tvmusor/TV2_SEF",
   "id318": "https://musor.tv/heti/tvmusor/VIASAT3",
-  "id323": "https://musor.tv/heti/tvmusor/VIASAT2",
-  "id322": "https://musor.tv/mai/tvmusor/FISHING_HUNTING"
+  "id323": "https://musor.tv/heti/tvmusor/VIASAT2"
 }
